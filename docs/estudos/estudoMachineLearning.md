@@ -77,7 +77,4 @@ Para aprofundar seus conhecimentos, recomendamos o seguinte curso gratuito no Yo
 
 Este curso cobre os fundamentos de Machine Learning, algoritmos e práticas essenciais para aplicação no mundo real.
 
----
-
-Se precisar de mais informações ou ajustes, sinta-se à vontade para contribuir com este arquivo!
 
