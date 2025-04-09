@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análise de Dados - IPEA</title>
+    <style>
+        :root {
+            --primary-color: #004a8d;
+            --secondary-color: #ffd100;
+            --accent-color: #006633;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background: #f8f9fa;
+        }
+
+        .institutional-banner {
+            background: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            font-size: 0.9em;
+            border-bottom: 3px solid var(--secondary-color);
+        }
+
+        .header {
+            background: var(--primary-color);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        footer {
+            background: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+        }
+
+        .ipea-logo {
+            height: 80px;
+            margin: 1rem auto;
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 2rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="institutional-banner">
+        <p>Dados oficiais fornecidos pelo Instituto de Pesquisa Econômica Aplicada (IPEA) - Fundação pública federal vinculada ao Ministério da Economia do Brasil</p>
+    </div>
+
+    <header class="header">
+
+        <h1>Plataforma de Análise de Dados Econômicos</h1>
+        <p>Sistema integrado para processamento e visualização de relatórios técnicos</p>
+    </header>
+
+    <main class="main-container">
+        <section id="sobre-ipea">
+            <h2>Sobre o Projeto</h2>
+            <div class="feature-card">
+                <p>Esta plataforma tem como objetivo principal:</p>
+                <ul>
+                    <li>Automatizar a coleta e processamento de dados</li>
+                    <li>Gerar visualizações interativas de informações econômicas</li>
+                    <li>Facilitar o acesso a relatórios técnicos institucionais</li>
+                    <li>Integrar diferentes fontes de dados governamentais</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="funcionalidades">
+            <h2>Funcionalidades Principais</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>Processamento de Dados</h3>
+                    <ul>
+                        <li>ETL automatizado</li>
+                        <li>Integração de bases heterogêneas</li>
+                        <li>Atualização programada</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>Análise Técnica</h3>
+                    <ul>
+                        <li>Modelos estatísticos</li>
+                        <li>Séries temporais</li>
+                        <li>Comparativos setoriais</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>Visualização</h3>
+                    <ul>
+                        <li>Gráficos interativos</li>
+                        <li>Relatórios customizáveis</li>
+                        <li>Exportação multiplataforma</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="contato">
+            <h2>Acesso aos Dados Originais</h2>
+            <div class="feature-card">
+                <p>Os dados brutos estão disponíveis no portal oficial:</p>
+                <a href="https://www.ipea.gov.br" 
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   style="color: var(--primary-color);">
+                    Portal Oficial do IPEA
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2024 Plataforma de Análise de Dados Econômicos</p>
+        <p>Projeto acadêmico independente - Não afiliado ao IPEA</p>
+        <p>Vinculação institucional conforme Decreto nº 7.724 de 2012</p>
+    </footer>
+
+    <script>
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
