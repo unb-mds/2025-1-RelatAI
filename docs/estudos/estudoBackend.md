@@ -1,6 +1,4 @@
 
-# Backend em Django para Geração Automática de Relatórios Inteligentes – IPEA
-
 ## Introdução: A Função do Backend
 
 O backend de um sistema web é responsável por gerenciar toda a lógica de negócio, acesso e manipulação de dados, autenticação, processamento e geração de relatórios. No contexto do projeto *Geração Automática de Relatórios Inteligentes para Análise de Dados Financeiros do IPEA*, o backend será desenvolvido utilizando o framework Django, um dos mais robustos e populares do ecossistema Python.
