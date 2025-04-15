@@ -70,9 +70,9 @@
 
 | Setor               | Membros                    |
 |---------------------|----------------------------|
-| **Frontend & Design** | Ana Luiza, Saied Falaneh  |
-| **Backend (API)**     | Pedro Rocha               |
-| **DevOps**            | Saied Falaneh             |
+| **Scrum Master**      | Saied Falaneh  |
+| **Product Owner**     | Ana Luiza               |
+| **Arquiteto**         | Pedro Rocha             |
 
 ---
 
