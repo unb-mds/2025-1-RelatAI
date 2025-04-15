@@ -30,7 +30,7 @@ Realizamos a organização inicial do projeto. Dividimos o trabalho em setores p
 
 | Setor           | Membros |
 |----------------|---------|
-| **Frontend & Design** | João Victor, Saied Muhamad |
+| **Frontend & Design** | João Vitor, Saied Muhamad |
 | **Backend (API)**  | Ana Luiza, Pedro Rocha |
 | **DevOps/NLP**        | Kauã Vale, Arthur Henrique |
 
