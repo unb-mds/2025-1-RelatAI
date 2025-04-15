@@ -3,7 +3,7 @@
 **Período:** 04/04/2025 a 11/04/2025  
 
 ## Descrição  
-> Sprint focada em **definir papéis, tecnologias e requisitos iniciais**, com ênfase em práticas ágeis e código autônomo.  
+> Sprint focada em **definir papéis, tecnologias e requisitos iniciais**, com ênfase em práticas ágeis e código autônomo. A equipe estabeleceu responsabilidades, consolidou a stack tecnológica e iniciou a configuração dos ambientes de desenvolvimento.
 
 ---
 
@@ -11,25 +11,88 @@
 
 - [x] Definir papéis e responsabilidades  
 - [x] Estudar stack tecnológica  
-- [x] Configurar ambiente de desenvolvimento inicial
+- [x] Configurar ambiente de desenvolvimento inicial  
 - [x] Priorizar requisitos do MVP  
 
 ---
 
-## Reunião Única  
+## Reuniões  
+
+### Reunião Única  
 
 **Data:** 11/04/2025  
 **Local:** Presencial  
 
 **Decisões tomadas:**  
-- **Papéis confirmados:**  
+- **Papéis definidos:**  
   - **Scrum Master:** Saied Falaneh  
   - **Product Owner:** Ana Luiza  
-  - **Arquiteto:** Pedro Rocha  
-- **Tecnologias definidas:**  
-  - **Frontend:** Streamlit (prototipagem), CSS, HTML, Figma (design).  
-  - **Backend:** Django (Python), SQLite (banco de dados), Pandas (análise de dados).  
-  - **Arquitetura:** MVC (Model-View-Controller).  
-  - **DevOps:** AWS (hospedagem), Docker (conteinerização), GitHub Pages (deploy).  
-- **Regras:**  
-  - Uso de ChatGPT apenas para consultas pontuais (não para gerar código).  
+  - **Arquiteto de Software:** Pedro Rocha  
+- **Tecnologias escolhidas:**  
+  - **Frontend:** Streamlit (prototipagem), CSS, HTML, Figma (design)  
+  - **Backend:** Django (Python), SQLite (banco de dados), Pandas (análise de dados)  
+  - **Arquitetura:** MVC (Model-View-Controller)  
+  - **DevOps:** AWS (hospedagem), Docker (conteinerização), GitHub Pages (deploy)  
+- **Regras de conduta:**  
+  - ChatGPT pode ser usado apenas para **consultas pontuais**, **não** para geração de código  
+
+---
+
+#### Requisitos  
+
+**Funcionais:**  
+- [ ] Tela inicial com menu de navegação  
+- [ ] Visualização de dados processados  
+- [ ] Upload de arquivos para análise  
+
+**Não Funcionais:**  
+- [ ] Interface simples e acessível  
+- [ ] Leveza na execução (tempo de carregamento)  
+- [ ] Código compreensível e modularizado  
+
+---
+
+#### Tecnologias Utilizadas  
+
+| Componente         | Tecnologia                |
+|-------------------|---------------------------|
+| **Design**        | Figma                     |
+| **Frontend**      | Streamlit, HTML, CSS      |
+| **Backend**       | Django (Python)           |
+| **Banco de Dados**| SQLite                    |
+| **Data Processing** | Pandas                    |
+| **DevOps**        | Docker, GitHub Pages      |
+| **Infraestrutura**| AWS                       |
+
+---
+
+#### Setores e Responsáveis  
+
+| Setor               | Membros                    |
+|---------------------|----------------------------|
+| **Frontend & Design** | Ana Luiza, Saied Falaneh  |
+| **Backend (API)**     | Pedro Rocha               |
+| **DevOps**            | Saied Falaneh             |
+
+---
+
+## Finalização  
+
+> Sprint concluída com sucesso. Time alinhado e ambiente preparado para o início do desenvolvimento técnico na Sprint 2.  
+
+### Entregas  
+- [x] Papéis definidos  
+- [x] Stack tecnológica estudada e validada  
+- [x] Ambiente de desenvolvimento configurado  
+- [x] MVP priorizado  
+
+### Pendências  
+- [ ] Desenvolvimento da interface inicial  
+- [ ] Criação do repositório com estrutura básica  
+- [ ] Início da documentação no `/docs`  
+
+---
+
+## Observações  
+
+> O time demonstrou boa sinergia e clareza nas decisões. Na próxima sprint, será importante focar no início do código, mantendo as boas práticas acordadas e respeitando as regras estabelecidas para uso de IA.
