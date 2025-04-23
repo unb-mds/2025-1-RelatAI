@@ -94,7 +94,6 @@ A integração entre o backend Django e o frontend será realizada por meio de t
 <html>
 <head>
   <title>Relatório Financeiro</title>
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
   <h1>{{ relatorio.titulo }}</h1>
