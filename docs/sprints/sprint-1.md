@@ -93,6 +93,3 @@
 
 ---
 
-## Observações  
-
-> O time demonstrou boa sinergia e clareza nas decisões. Na próxima sprint, será importante focar no início do código, mantendo as boas práticas acordadas e respeitando as regras estabelecidas para uso de IA.
