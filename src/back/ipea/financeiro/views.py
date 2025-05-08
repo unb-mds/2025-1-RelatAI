@@ -1,47 +1,65 @@
-import csv
+import requests
 from django.http import HttpResponse
 
-def exibir_ipca(request):
-    caminho_csv = 'data/ipca.csv'
-    with open(caminho_csv, newline='', encoding='utf-8') as csvfile:
-        reader = csv.reader(csvfile)
-        linhas = ['\t'.join(row) for row in reader]
-        texto = '\n'.join(linhas)
+def ver_tabelas(titulo, url):
 
-    return HttpResponse(texto, content_type='text/plain')
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        dados_json = response.json()
 
-def exibir_igpm(request):
-    caminho_csv = 'data/igp.csv'
-    with open(caminho_csv, newline='', encoding='utf-8') as csvfile:
-        reader = csv.reader(csvfile)
-        linhas = ['\t'.join(row) for row in reader]
-        texto = '\n'.join(linhas)
+        html = """
+        <html>
+            <head>
+                <title> Taxas </title>
+                <style>
+                    table {
+                        border-collapse: collapse;
+                        width: 50%;
+                        margin: 20px auto;
+                        font-family: Arial, sans-serif;
+                    }
+                    th, td {
+                        border: 1px solid #ccc;
+                        padding: 8px;
+                        text-align: center;
+                    }
+                    th {
+                        background-color: #f2f2f2;
+                    }
+                </style>
+            </head>
+            <body>
+                <h2 style="text-align: center;">Valores da série histórica</h2>
+                <table>
+                    <tr>
+                        <th>Data</th>
+                        <th>Valor</th>
+                    </tr>
+        """
 
-    return HttpResponse(texto, content_type='text/plain')
+        for item in dados_json:
+            html += f"<tr><td>{item['data']}</td><td>{item['valor']}</td></tr>"
 
-def exibir_inpc(request):
-    caminho_csv = 'data/inpc.csv'
-    with open(caminho_csv, newline='', encoding='utf-8') as csvfile:
-        reader = csv.reader(csvfile)
-        linhas = ['\t'.join(row) for row in reader]
-        texto = '\n'.join(linhas)
+        html += """
+                </table>
+            </body>
+        </html>
+        """
 
-    return HttpResponse(texto, content_type='text/plain')
+        return HttpResponse(html)
 
-def exibir_cambio(request):
-    caminho_csv = 'data/cambio.csv'
-    with open(caminho_csv, newline='', encoding='utf-8') as csvfile:
-        reader = csv.reader(csvfile)
-        linhas = ['\t'.join(row) for row in reader]
-        texto = '\n'.join(linhas)
+    except requests.RequestException as e:
+        return HttpResponse(f"Erro na requisição: {e}", status=500)
 
-    return HttpResponse(texto, content_type='text/plain')
+def selic(request):
+    url = 'https://api.bcb.gov.br/dados/serie/bcdata.sgs.11/dados?formato=json&dataInicial=01/05/2025'
+    return ver_tabelas('Taxa SELIC', url)
 
-def exibir_taxa_de_juros(request):
-    caminho_csv = 'data/taxa_de_juros.csv'
-    with open(caminho_csv, newline='', encoding='utf-8') as csvfile:
-        reader = csv.reader(csvfile)
-        linhas = ['\t'.join(row) for row in reader]
-        texto = '\n'.join(linhas)
+def ipca(request):
+    url = 'https://api.bcb.gov.br/dados/serie/bcdata.sgs.10843/dados?formato=json&dataInicial=01/05/2025'
+    return ver_tabelas('Taxa IPCA', url)
 
-    return HttpResponse(texto, content_type='text/plain')
+def cambio(request):
+    url = 'https://api.bcb.gov.br/dados/serie/bcdata.sgs.10813/dados?formato=json&dataInicial=01/05/2025'
+    return ver_tabelas('Taxa Cambio', url)
