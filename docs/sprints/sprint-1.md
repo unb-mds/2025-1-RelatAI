@@ -30,7 +30,7 @@
   - **Arquiteto de Software:** Pedro Rocha  
 - **Tecnologias escolhidas:**  
   - **Frontend:** Streamlit (prototipagem), CSS, HTML, Figma (design)  
-  - **Backend:** Django (Python), SQLite (banco de dados), Pandas (análise de dados)  
+  - **Backend:** Django (Python), SQLite (banco de dados), Pandas (análise de dados), Scikit-Learn (machine learning)
   - **Arquitetura:** MVC (Model-View-Controller)  
   - **DevOps:** AWS (hospedagem), Docker (conteinerização), GitHub Pages (deploy)  
 - **Regras de conduta:**  
