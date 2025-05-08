@@ -1,5 +1,5 @@
 """
-WSGI config for ipea project.
+WSGI config for relatorioipea project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ipea.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'relatorioipea.settings')
 
 application = get_wsgi_application()
