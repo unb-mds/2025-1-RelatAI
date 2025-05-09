@@ -57,7 +57,7 @@ def selic(request):
     return ver_tabelas('Taxa SELIC', url)
 
 def ipca(request):
-    url = 'https://api.bcb.gov.br/dados/serie/bcdata.sgs.10843/dados?formato=json&dataInicial=01/05/2025'
+    url = 'https://api.bcb.gov.br/dados/serie/bcdata.sgs.10843/dados?formato=json&dataInicial=01/02/2025'
     return ver_tabelas('Taxa IPCA', url)
 
 def cambio(request):
