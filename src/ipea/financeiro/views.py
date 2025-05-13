@@ -61,5 +61,5 @@ def ipca(request):
     return ver_tabelas('Taxa IPCA', url)
 
 def cambio(request):
-    url = 'https://api.bcb.gov.br/dados/serie/bcdata.sgs.10813/dados?formato=json&dataInicial=01/05/2025'
+    url = 'https://api.bcb.gov.br/dados/serie/bcdata.sgs.10813/dados?formato=json&dataInicial=01/01/2025'
     return ver_tabelas('Taxa Cambio', url)
