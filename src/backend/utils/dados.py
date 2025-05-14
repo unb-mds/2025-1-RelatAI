@@ -1,23 +1,16 @@
-import pandas as pd
-import requests
-from io import StringIO
+# URLs das APIs do Banco Central
+URL_SELIC = "https://api.bcb.gov.br/dados/serie/bcdata.sgs.7326/dados?formato=csv&dataInicial=12/05/2015&dataFinal=12/05/2025"
+URL_CAMBIO = "https://api.bcb.gov.br/dados/serie/bcdata.sgs.1/dados?formato=csv&dataInicial=12/05/2015&dataFinal=12/05/2025"
+URL_IPCA = "https://api.bcb.gov.br/dados/serie/bcdata.sgs.433/dados?formato=csv"  # IPCA é mensal, não precisa limitar
 
-# URL da API do Banco Central para consulta de dados financeiros
-URL_BC = "https://api.bcb.gov.br/dados/serie/bcdata.sgs.7326/dados?formato=csv"
 
-# Carrega os dados de um arquivo CSV local (modo offline ou backup)
-def carregar_dados():
-    return pd.read_csv("data/dados_ipea.csv")
+# Baixar dados diretamente (sem tratamento)
+response_selic = requests.get(URL_SELIC)
+response_cambio = requests.get(URL_CAMBIO)
+response_ipca = requests.get(URL_IPCA)
 
-# Faz requisição à API do BC, trata e retorna o DataFrame atualizado
-def baixar_dados_banco_central():
-    response = requests.get(URL_BC)
-    if response.status_code == 200:
-        df = pd.read_csv(StringIO(response.text), sep=";")
-        df.columns = [c.strip().lower() for c in df.columns]  # Normaliza colunas
-        df.rename(columns={"data": "data", "valor": "valor"}, inplace=True)
-        df["data"] = pd.to_datetime(df["data"], dayfirst=True)  # Converte datas
-        df["ano"] = df["data"].dt.year  # Extrai ano
-        return df
-    else:
-        raise Exception("Erro ao acessar API do Banco Central")
+# Converter respostas em DataFrame bruto
+df_selic = pd.read_csv(StringIO(response_selic.text), sep=";", decimal=",") #Transform de tipo texto em String, declara que ; é separação, e declara que ontem tem número com , signific que é decimal e transforma para .
+df_cambio = pd.read_csv(StringIO(response_cambio.text), sep=";", decimal=",")
+df_ipca = pd.read_csv(StringIO(response_ipca.text), sep=";", decimal=",")
+pd.set_option('display.max_columns', None) #mostrar o maximo de colunas existentes
