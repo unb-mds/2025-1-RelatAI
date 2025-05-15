@@ -1,7 +1,8 @@
 from fastapi import APIRouter
-from utils.dados import carregar_dados, baixar_dados_banco_central
+from fastapi.responses import JSONResponse
+from fastapi import HTTPException
+from utils.dados import carregar_dados, atualizar_dados
 from utils.dados import df_cambio, df_ipca, df_selic, filtrar_por_ano_mes
->>>>>>> efe836184675026bb939af1940b9b62911a1cdb9
 from utils.alertas import gerar_alertas
 from ml import aplicar_modelo_tendencia
 from nlp import gerar_resumo_nlp
@@ -15,10 +16,16 @@ def get_dados():
     return df.to_dict(orient="records")
 
 # Endpoint que retorna dados atualizados direto da API do Banco Central
-@router.get("/api/dados_atualizados")
-def get_dados_atualizados():
-    df = baixar_dados_banco_central()
-    return df.to_dict(orient="records")
+@router.get("/atualizar-dados")
+def atualizar():
+    dados = carregar_dados()
+    if not dados:
+        return {"erro": "Falha ao carregar"}
+
+    # Atualiza os dados existentes
+    atualizados = atualizar_dados(dados["selic"], dados["cambio"], dados["ipca"])
+    
+    return {"mensagem": "Atualizado com sucesso"}
 
 # Endpoint IPCA
 @router.get("/api/ipca")
