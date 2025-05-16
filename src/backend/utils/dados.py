@@ -105,3 +105,29 @@ def atualizar_dados(df_selic, df_cambio, df_ipca):
 # Função de filtro por ano e mês
 def filtrar_por_ano_mes(df, ano: str, mes: str):
     return df[(df['ano'] == ano) & (df['mes'].str.lower() == mes.lower())]
+
+
+
+## 1. Carregar os dados iniciais
+# = carregar_dados()
+
+# 2. Atualizar os dados até a data atual
+#dados_atualizados = atualizar_dados(
+#    dados["selic"], dados["cambio"], dados["ipca"]
+#)
+
+# Agora você pode acessar os DataFrames atualizados:
+#df_selic = dados_atualizados["selic"]
+#df_cambio = dados_atualizados["cambio"]
+#df_ipca = dados_atualizados["ipca"]
+
+#Para ver
+#df_ipca
+#df_cambio
+#df_selic
+
+# 3. Exemplo: filtrar dados de câmbio para Março de 2024
+#df_filtrado = filtrar_por_ano_mes(df_cambio, "2024", "março")
+
+# 4. Ver os dados
+#print(df_filtrado)
