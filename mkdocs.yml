@@ -1,0 +1,53 @@
+site_name: RelatAI - Relatórios Inteligentes com dados IPEA
+
+site_description: Documentação oficial do projeto
+site_author: Sua Equipe
+theme:
+  name: material
+  logo: mkdocs/images/iconegrafico.png
+  favicon: mkdocs/images/iconegrafico.png
+  palette:
+    - scheme: default
+      primary: blue grey
+      accent: red
+      toggle:
+        icon: material/brightness-4
+        name: Modo escuro
+    - scheme: slate
+      primary: blue grey
+      accent: red
+      toggle:
+        icon: material/brightness-7
+        name: Modo claro
+  font:
+    text: Roboto
+    code: Roboto Mono
+  features:
+    - navigation.tabs
+    - navigation.top
+    - content.code.copy
+    - content.tabs.link
+    - content.action.edit
+extra_css:
+  - mkdocs/stylesheets/extra.css
+markdown_extensions:
+  - admonition
+  - codehilite
+  - pymdownx.superfences
+  - pymdownx.highlight
+  - pymdownx.emoji
+  - pymdownx.tabbed
+  - pymdownx.tasklist
+
+nav:
+  - Home: mkdocs/index.md
+  - Documento de Arquitetura: mkdocs/docarquitetura.md
+  - Requisitos: sprints/requisitos.md
+  - Sprint padrão: sprints/sprint-padrao.md
+  - Sprint 0: sprints/sprint-0.md
+  - Sprint 1: sprints/sprint-1.md
+  - Sprint 2: sprints/sprint-2.md
+  - Sprint 3: sprints/sprint-3.md
+  - Sprint 4: sprints/sprint-4.md
+
+  
