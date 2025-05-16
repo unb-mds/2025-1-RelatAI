@@ -1,0 +1,1595 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentação oficial do projeto">
+      
+      
+        <meta name="author" content="Sua Equipe">
+      
+      
+      
+        <link rel="prev" href="../">
+      
+      
+        <link rel="next" href="../../sprints/requisitos/">
+      
+      
+      <link rel="icon" href="../images/iconegrafico.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.14">
+    
+    
+      
+        <title>Documento de Arquitetura - RelatAI - Relatórios Inteligentes com dados IPEA</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue-grey" data-md-color-accent="red">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#documento-de-arquitetura-grupo-9-20251" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="RelatAI - Relatórios Inteligentes com dados IPEA" class="md-header__button md-logo" aria-label="RelatAI - Relatórios Inteligentes com dados IPEA" data-md-component="logo">
+      
+  <img src="../images/iconegrafico.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            RelatAI - Relatórios Inteligentes com dados IPEA
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Documento de Arquitetura
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="blue-grey" data-md-color-accent="red"  aria-label="Modo escuro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Modo escuro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="blue-grey" data-md-color-accent="red"  aria-label="Modo claro"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Modo claro" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Documento de Arquitetura
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../sprints/requisitos/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Requisitos
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../sprints/sprint-padrao/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Sprint padrão
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../sprints/sprint-0/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Sprint 0
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../sprints/sprint-1/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Sprint 1
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../sprints/sprint-2/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Sprint 2
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../sprints/sprint-3/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Sprint 3
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../sprints/sprint-4/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Sprint 4
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="RelatAI - Relatórios Inteligentes com dados IPEA" class="md-nav__button md-logo" aria-label="RelatAI - Relatórios Inteligentes com dados IPEA" data-md-component="logo">
+      
+  <img src="../images/iconegrafico.png" alt="logo">
+
+    </a>
+    RelatAI - Relatórios Inteligentes com dados IPEA
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Documento de Arquitetura
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Documento de Arquitetura
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#historico-de-revisoes" class="md-nav__link">
+    <span class="md-ellipsis">
+      📜 Histórico de Revisões
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#autores" class="md-nav__link">
+    <span class="md-ellipsis">
+      👥 Autores
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sumario" class="md-nav__link">
+    <span class="md-ellipsis">
+      📑 Sumário
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-introducao" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. 🎯 Introdução
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. 🎯 Introdução">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-proposito" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.1 Propósito
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-escopo" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.2 Escopo
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-representacao-arquitetural" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. 🧠 Representação Arquitetural
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 🧠 Representação Arquitetural">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-definicoes" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1 Definições
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-justificativa" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2 Justificativa
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-detalhamento-das-camadas" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.3 Detalhamento das Camadas
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.3 Detalhamento das Camadas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#model" class="md-nav__link">
+    <span class="md-ellipsis">
+      Model
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#template-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      Template (View)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#view-controller" class="md-nav__link">
+    <span class="md-ellipsis">
+      View (Controller)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-metas-e-restricoes-arquiteturais" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.4 Metas e Restrições Arquiteturais
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.4 Metas e Restrições Arquiteturais">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#metas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Metas
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#restricoes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Restrições
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#25-visao-de-casos-de-uso" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.5 Visão de Casos de Uso
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.5 Visão de Casos de Uso">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#funcionalidades" class="md-nav__link">
+    <span class="md-ellipsis">
+      Funcionalidades:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#26-visao-logica" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.6 Visão Lógica
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.6 Visão Lógica">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#componentes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Componentes:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fluxo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fluxo:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#27-visao-de-implementacao" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.7 Visão de Implementação
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.7 Visão de Implementação">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bibliotecas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bibliotecas:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#28-visao-de-implantacao" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.8 Visão de Implantação
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#29-restricoes-adicionais" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.9 Restrições Adicionais
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.9 Restrições Adicionais">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#funcionais" class="md-nav__link">
+    <span class="md-ellipsis">
+      Funcionais:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nao-funcionais" class="md-nav__link">
+    <span class="md-ellipsis">
+      Não Funcionais:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-bibliografia" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. 📚 Bibliografia
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sprints/requisitos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Requisitos
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sprints/sprint-padrao/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Sprint padrão
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sprints/sprint-0/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Sprint 0
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sprints/sprint-1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Sprint 1
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sprints/sprint-2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Sprint 2
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sprints/sprint-3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Sprint 3
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sprints/sprint-4/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Sprint 4
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#historico-de-revisoes" class="md-nav__link">
+    <span class="md-ellipsis">
+      📜 Histórico de Revisões
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#autores" class="md-nav__link">
+    <span class="md-ellipsis">
+      👥 Autores
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sumario" class="md-nav__link">
+    <span class="md-ellipsis">
+      📑 Sumário
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-introducao" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. 🎯 Introdução
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. 🎯 Introdução">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-proposito" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.1 Propósito
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-escopo" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.2 Escopo
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-representacao-arquitetural" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. 🧠 Representação Arquitetural
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 🧠 Representação Arquitetural">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-definicoes" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1 Definições
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-justificativa" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2 Justificativa
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-detalhamento-das-camadas" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.3 Detalhamento das Camadas
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.3 Detalhamento das Camadas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#model" class="md-nav__link">
+    <span class="md-ellipsis">
+      Model
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#template-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      Template (View)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#view-controller" class="md-nav__link">
+    <span class="md-ellipsis">
+      View (Controller)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-metas-e-restricoes-arquiteturais" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.4 Metas e Restrições Arquiteturais
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.4 Metas e Restrições Arquiteturais">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#metas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Metas
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#restricoes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Restrições
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#25-visao-de-casos-de-uso" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.5 Visão de Casos de Uso
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.5 Visão de Casos de Uso">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#funcionalidades" class="md-nav__link">
+    <span class="md-ellipsis">
+      Funcionalidades:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#26-visao-logica" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.6 Visão Lógica
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.6 Visão Lógica">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#componentes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Componentes:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fluxo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fluxo:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#27-visao-de-implementacao" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.7 Visão de Implementação
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.7 Visão de Implementação">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bibliotecas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bibliotecas:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#28-visao-de-implantacao" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.8 Visão de Implantação
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#29-restricoes-adicionais" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.9 Restrições Adicionais
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.9 Restrições Adicionais">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#funcionais" class="md-nav__link">
+    <span class="md-ellipsis">
+      Funcionais:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nao-funcionais" class="md-nav__link">
+    <span class="md-ellipsis">
+      Não Funcionais:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-bibliografia" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. 📚 Bibliografia
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="documento-de-arquitetura-grupo-9-20251">🧱 Documento de Arquitetura - Grupo 9 (2025.1)</h1>
+<h2 id="historico-de-revisoes">📜 Histórico de Revisões</h2>
+<table>
+<thead>
+<tr>
+<th>Data</th>
+<th>Versão</th>
+<th>Descrição</th>
+<th>Autores</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>23/04/2025</td>
+<td>1.0</td>
+<td>Considerações iniciais</td>
+<td>Pedro Rocha Ferreira Lima</td>
+</tr>
+<tr>
+<td>08/05/2025</td>
+<td>2.0</td>
+<td>Adição de tópicos, diagramas, tecnologias novas</td>
+<td>Pedro Rocha Ferreira Lima</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="autores">👥 Autores</h2>
+<table>
+<thead>
+<tr>
+<th>Matrícula</th>
+<th>Nome</th>
+<th>Função</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>222034270</td>
+<td>Pedro Rocha Ferreira Lima</td>
+<td>Arquiteto de Software</td>
+</tr>
+<tr>
+<td>200014226</td>
+<td>Ana Luiza Borba de Abrantes</td>
+<td>Project Owner</td>
+</tr>
+<tr>
+<td>231034064</td>
+<td>Arthur Henrique Vieira</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>222006857</td>
+<td>João Vitor Sales Ibiapina</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>232014057</td>
+<td>Kauã Vale Leão</td>
+<td>DevOps</td>
+</tr>
+<tr>
+<td>232014567</td>
+<td>Saied Muhamad Yacoub Falaneh</td>
+<td>Scrum Master</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="sumario">📑 Sumário</h2>
+<ol>
+<li><a href="#1-introdução">Introdução</a>  </li>
+<li><a href="#2-representação-arquitetural">Representação Arquitetural</a>  </li>
+<li><a href="#3-bibliografia">Bibliografia</a></li>
+</ol>
+<hr />
+<h2 id="1-introducao">1. 🎯 Introdução</h2>
+<h3 id="11-proposito">1.1 Propósito</h3>
+<p>Este documento descreve a arquitetura da Plataforma de Análise de Dados Financeiros do IPEA, no contexto da disciplina de Métodos de Desenvolvimento de Software (2025.1). Seu objetivo é garantir clareza na construção, manutenção e evolução do sistema, orientando decisões técnicas e organizacionais.</p>
+<h3 id="12-escopo">1.2 Escopo</h3>
+<p>O sistema permitirá:
+- Coleta, análise e visualização de dados financeiros públicos;
+- Construção de painéis interativos em tempo real;
+- Geração automática de textos e alertas baseados em dados.</p>
+<hr />
+<h2 id="2-representacao-arquitetural">2. 🧠 Representação Arquitetural</h2>
+<h3 id="21-definicoes">2.1 Definições</h3>
+<p>Adotamos o padrão <strong>MVC</strong> (Model-View-Controller), adaptado ao <strong>MVT</strong> (Model-View-Template) do Django.</p>
+<h3 id="22-justificativa">2.2 Justificativa</h3>
+<ul>
+<li>✅ <strong>Separação de Responsabilidade</strong>: facilita manutenção e testes.  </li>
+<li>🔁 <strong>Reutilização de Componentes</strong>: filtros, gráficos e módulos com Django e Pandas.  </li>
+<li>🧪 <strong>Facilidade de Testes</strong>: apoio a testes unitários e de integração.  </li>
+<li>👥 <strong>Desenvolvimento Paralelo</strong>: divisão entre frontend (Streamlit) e backend (Django).  </li>
+<li>🚀 <strong>Escalabilidade</strong>: integração com Docker e AWS.  </li>
+<li>🎯 <strong>Alinhamento aos Requisitos</strong>: pensado para analistas do IPEA e tempo do projeto.</li>
+</ul>
+<h3 id="23-detalhamento-das-camadas">2.3 Detalhamento das Camadas</h3>
+<h4 id="model">Model</h4>
+<p>Responsável pela lógica de dados, utilizando o ORM do Django com entidades como:
+- Conjunto de Dados
+- Análises
+- Usuários
+- Logs de Acesso</p>
+<h4 id="template-view">Template (View)</h4>
+<p>Interface visual com o usuário usando <strong>Streamlit</strong> e <strong>HTML/CSS</strong>, planejada via Figma. Apresenta:
+- Dashboards e gráficos
+- Tabelas e mensagens</p>
+<h4 id="view-controller">View (Controller)</h4>
+<p>Gerencia requisições e lógica de negócio com Django. Executa:
+- Processamento de CSV com Pandas
+- Interação com o banco de dados
+- Renderização para o template</p>
+<hr />
+<h3 id="24-metas-e-restricoes-arquiteturais">2.4 Metas e Restrições Arquiteturais</h3>
+<h4 id="metas">Metas</h4>
+<ul>
+<li>⚙️ <strong>Escalabilidade</strong></li>
+<li>⚡ <strong>Desempenho</strong></li>
+<li>🔧 <strong>Manutenibilidade</strong></li>
+<li>🔒 <strong>Segurança</strong></li>
+</ul>
+<h4 id="restricoes">Restrições</h4>
+<ul>
+<li>💻 <strong>Compatibilidade universal</strong></li>
+<li>🛡️ <strong>Segurança contra acessos indevidos</strong></li>
+</ul>
+<hr />
+<h3 id="25-visao-de-casos-de-uso">2.5 Visão de Casos de Uso</h3>
+<p>Tecnologias:
+- <strong>Backend</strong>: Django, Pandas, Scikit-learn
+- <strong>Frontend</strong>: HTML, CSS, Streamlit
+- <strong>Banco de Dados</strong>: SQLite</p>
+<h4 id="funcionalidades">Funcionalidades:</h4>
+<ul>
+<li>Tela inicial com menu</li>
+<li>Painéis interativos em tempo real</li>
+<li>Geração de relatórios automáticos</li>
+<li>Previsões com ML</li>
+<li>Filtros e carregamento de datasets</li>
+</ul>
+<hr />
+<h3 id="26-visao-logica">2.6 Visão Lógica</h3>
+<h4 id="componentes">Componentes:</h4>
+<ul>
+<li><strong>Model</strong></li>
+<li><code>ConjuntoDeDados</code></li>
+<li><code>AnaliseFinanceira</code></li>
+<li><code>Usuario</code></li>
+<li>
+<p><code>LogAcesso</code></p>
+</li>
+<li>
+<p><strong>View (Controller)</strong></p>
+</li>
+<li>Processa requisições</li>
+<li>
+<p>Valida, salva e envia dados para template</p>
+</li>
+<li>
+<p><strong>Template (Apresentação)</strong></p>
+</li>
+<li>Streamlit + HTML/CSS</li>
+<li>Exibição de dashboards e alertas</li>
+</ul>
+<h4 id="fluxo">Fluxo:</h4>
+<ol>
+<li>Usuário interage com a interface  </li>
+<li>View processa a requisição  </li>
+<li>Acessa ou modifica os dados no Model  </li>
+<li>Retorna dados tratados ao Template</li>
+</ol>
+<hr />
+<h3 id="27-visao-de-implementacao">2.7 Visão de Implementação</h3>
+<p>Organização modular, dividida em camadas.</p>
+<h4 id="bibliotecas">Bibliotecas:</h4>
+<ul>
+<li>Django</li>
+<li>Pandas</li>
+<li>Scikit-learn</li>
+<li>Streamlit</li>
+<li>HTML/CSS</li>
+</ul>
+<hr />
+<h3 id="28-visao-de-implantacao">2.8 Visão de Implantação</h3>
+<ul>
+<li>🖥️ Execução local via navegador (desktop)</li>
+<li>📦 Docker para empacotamento</li>
+<li>☁️ Pronto para hospedagem futura na AWS</li>
+<li>🧩 Integração: Django + Streamlit + SQLite</li>
+</ul>
+<hr />
+<h3 id="29-restricoes-adicionais">2.9 Restrições Adicionais</h3>
+<h4 id="funcionais">Funcionais:</h4>
+<ul>
+<li>Acesso ao site antes do login</li>
+<li>Funcionalidades restritas a usuários autenticados</li>
+</ul>
+<h4 id="nao-funcionais">Não Funcionais:</h4>
+<table>
+<thead>
+<tr>
+<th>Requisito</th>
+<th>Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>✅ Usabilidade</td>
+<td>Interface intuitiva</td>
+</tr>
+<tr>
+<td>📱 Portabilidade</td>
+<td>Acessível em qualquer SO ou navegador</td>
+</tr>
+<tr>
+<td>🔐 Segurança</td>
+<td>Proteção contra acessos indevidos</td>
+</tr>
+<tr>
+<td>🧩 Manutenibilidade</td>
+<td>Código documentado</td>
+</tr>
+<tr>
+<td>📈 Escalabilidade</td>
+<td>Pensado para crescimento futuro</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="3-bibliografia">3. 📚 Bibliografia</h2>
+<blockquote>
+<p>Arquitetura MVC: entendendo o modelo-visão-controlador. DIO.me, 2024.<br />
+Disponível em: https://www.dio.me/articles/arquitetura-mvc-entendendo-o-modelo-visao-controlador<br />
+Acesso em: 23 abril de 2025.</p>
+</blockquote>
+<hr />
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "content.code.copy", "content.tabs.link", "content.action.edit"], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.13a4f30d.min.js"></script>
+      
+    
+  </body>
+</html>
