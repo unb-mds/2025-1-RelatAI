@@ -1,0 +1,18 @@
+/* Fundo das caixas de admonition */
+.md-typeset .admonition {
+  border-left: 4px solid #f44336;
+  background-color: #f9f9f9;
+}
+
+/* Destaque para títulos */
+h1, h2 {
+  color: #0d47a1;
+}
+
+/* Cards ou imagens centrais */
+img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 80%;
+}
