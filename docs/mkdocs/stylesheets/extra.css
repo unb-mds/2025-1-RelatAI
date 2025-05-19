@@ -1,18 +1,88 @@
-/* Fundo das caixas de admonition */
+/* ----- Paleta base ----- */
+:root {
+  --relat-red:  #c62828; /* vermelho */
+  --relat-blue: #1565c0; /* azul    */
+}
+
+/* fundo do topo + shadow discreta */
+.md-header {
+  background: linear-gradient(90deg, var(--relat-red), var(--relat-blue));
+  box-shadow: 0 2px 4px rgb(0 0 0 / .1);
+}
+
+/* cor ativa no menu lateral/abas */
+.md-nav__link--active,
+.md-tabs__link--active {
+  color: var(--relat-red);
+  border-bottom: 2px solid var(--relat-red);
+}
+
+/* links em geral */
+a {
+  color: var(--relat-blue);
+}
+a:hover {
+  color: var(--relat-red);
+}
+
+/* botões de código e labels */
+.md-typeset code,
+.md-button,
+.md-typeset .admonition-title {
+  background-color: var(--relat-blue);
+  color: #fff;
+}
+
+/* caixas de destaque (!!! note, tip…) */
 .md-typeset .admonition {
-  border-left: 4px solid #f44336;
-  background-color: #f9f9f9;
+  border-left: 4px solid var(--relat-red);
+  border-radius: .5rem;
+  background: rgb(245 247 255);
 }
 
-/* Destaque para títulos */
-h1, h2 {
-  color: #0d47a1;
-}
-
-/* Cards ou imagens centrais */
-img {
+/* tabelas responsivas */
+table {
+  border-collapse: collapse;
+  overflow-x: auto;
   display: block;
-  margin-left: auto;
-  margin-right: auto;
-  max-width: 80%;
 }
+table th {
+  background: var(--relat-blue);
+  color: #fff;
+}
+
+/* realce de código (prism) */
+code[class*="language-"],
+pre[class*="language-"] {
+  background: #0d1117;           /* dark mode vibe */
+  border: 1px solid #30363d;
+}
+
+/* footer discreto */
+.md-footer {
+  background: var(--relat-blue);
+  color: #fff;
+}
+.md-footer a {
+  color: #ffebee;               /* tom claro de vermelho */
+}
+
+/* ---------- Cor padrão (modo claro) ---------- */
+.md-nav__link,
+.md-tabs__link {
+  color: #0d47a1;                 /* azul‑marinho */
+}
+
+/* página atual */
+.md-nav__link--active,
+.md-tabs__link--active {
+  color: var(--relat-red);        /* segue vermelho de destaque */
+  border-bottom: 2px solid var(--relat-red);
+}
+
+/* hover */
+.md-nav__link:hover,
+.md-tabs__link:hover {
+  color: var(--relat-red);
+}
+

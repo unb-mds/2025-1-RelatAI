@@ -1,28 +1,35 @@
-# 🧱 Documento de Arquitetura - Grupo 9 (2025.1)
+# Documento de Arquitetura - RelatAI
 
-## 📜 Histórico de Revisões
-
-| Data       | Versão | Descrição                           | Autores                     |
-|------------|--------|-------------------------------------|-----------------------------|
-| 23/04/2025 | 1.0    | Considerações iniciais              | Pedro Rocha Ferreira Lima  |
-| 08/05/2025 | 2.0    | Adição de tópicos, diagramas, tecnologias novas | Pedro Rocha Ferreira Lima  |
+## Plataforma de Análise de Dados Financeiros do IPEA  
+**Grupo 9 - 2025.1**  
+**Versão 1.0**
 
 ---
 
-## 👥 Autores
+## Histórico de Revisões
 
-| Matrícula  | Nome                              | Função                |
-|------------|-----------------------------------|-----------------------|
-| 222034270  | Pedro Rocha Ferreira Lima         | Arquiteto de Software |
-| 200014226  | Ana Luiza Borba de Abrantes       | Project Owner         |
-| 231034064  | Arthur Henrique Vieira            | Dev                   |
-| 222006857  | João Vitor Sales Ibiapina         | Dev                   |
-| 232014057  | Kauã Vale Leão                    | DevOps                |
-| 232014567  | Saied Muhamad Yacoub Falaneh      | Scrum Master          |
+| Data       | Versão | Descrição                                     | Autor(es)                      |
+|------------|--------|-----------------------------------------------|--------------------------------|
+| 23/04/2025 | 1.0    | Considerações iniciais                        | Pedro Rocha Ferreira Lima      |
+| 08/05/2025 | 2.0    | Adição de tópicos, diagramas e tecnologias    | Pedro Rocha Ferreira Lima      |
+| 19/05/2025 | 3.0    | Mudança de tecnologia para backend e arquitetura | Pedro Rocha Ferreira Lima  |
 
 ---
 
-## 📑 Sumário
+## Autores
+
+| Matrícula   | Nome                              | Função               |
+|-------------|-----------------------------------|----------------------|
+| 222034270   | Pedro Rocha Ferreira Lima         | Arquiteto de Software |
+| 200014226   | Ana Luiza Borba de Abrantes       | Project Owner        |
+| 231034064   | Arthur Henrique Vieira            | Dev                  |
+| 222006857   | João Vitor Sales Ibiapina         | Dev                  |
+| 232014057   | Kauã Vale Leão                    | DevOps               |
+| 232014567   | Saied Muhamad Yacoub Falaneh     | Scrum Master         |
+
+---
+
+## Sumário
 
 1. [Introdução](#1-introdução)  
 2. [Representação Arquitetural](#2-representação-arquitetural)  
@@ -30,159 +37,157 @@
 
 ---
 
-## 1. 🎯 Introdução
+## 1. Introdução
 
 ### 1.1 Propósito
 
-Este documento descreve a arquitetura da Plataforma de Análise de Dados Financeiros do IPEA, no contexto da disciplina de Métodos de Desenvolvimento de Software (2025.1). Seu objetivo é garantir clareza na construção, manutenção e evolução do sistema, orientando decisões técnicas e organizacionais.
+Este documento descreve a arquitetura da Plataforma de Análise de Dados Financeiros do IPEA, com foco na clareza para construção, manutenção e evolução do sistema.
 
 ### 1.2 Escopo
 
-O sistema permitirá:
-- Coleta, análise e visualização de dados financeiros públicos;
-- Construção de painéis interativos em tempo real;
-- Geração automática de textos e alertas baseados em dados.
+O sistema possibilita a coleta, análise e visualização de dados financeiros públicos. As funcionalidades incluem:
+- Dashboards interativos em tempo real;
+- Geração automática de textos com base em análise de dados;
+- Resumos e alertas de tendências financeiras.
 
 ---
 
-## 2. 🧠 Representação Arquitetural
+## 2. Representação Arquitetural
 
 ### 2.1 Definições
 
-Adotamos o padrão **MVC** (Model-View-Controller), adaptado ao **MVT** (Model-View-Template) do Django.
+A arquitetura segue o padrão **MVC (Model-View-Controller)**:
+- **Model**: lógica e estrutura de dados.
+- **View**: interface visual com Streamlit.
+- **Controller**: lógica de requisições com FastAPI.
 
 ### 2.2 Justificativa
 
-- ✅ **Separação de Responsabilidade**: facilita manutenção e testes.  
-- 🔁 **Reutilização de Componentes**: filtros, gráficos e módulos com Django e Pandas.  
-- 🧪 **Facilidade de Testes**: apoio a testes unitários e de integração.  
-- 👥 **Desenvolvimento Paralelo**: divisão entre frontend (Streamlit) e backend (Django).  
-- 🚀 **Escalabilidade**: integração com Docker e AWS.  
-- 🎯 **Alinhamento aos Requisitos**: pensado para analistas do IPEA e tempo do projeto.
+- **Separação de responsabilidades**  
+- **Reutilização de componentes com Python e Pandas**  
+- **Facilidade de testes por camada**  
+- **Desenvolvimento paralelo** (Frontend vs Backend)  
+- **Escalabilidade com Docker e AWS**  
+- **Alinhamento às necessidades funcionais do IPEA**
 
-### 2.3 Detalhamento das Camadas
+---
+
+### 2.3 Detalhamento
 
 #### Model
-Responsável pela lógica de dados, utilizando o ORM do Django com entidades como:
-- Conjunto de Dados
-- Análises
-- Usuários
-- Logs de Acesso
+- Interage com o SQLite.
+- Entidades:
+  - Conjunto de Dados (CSV)
+  - Análises (parâmetros/resultados)
+  - Usuários (preferências)
+  - Logs de acesso
 
-#### Template (View)
-Interface visual com o usuário usando **Streamlit** e **HTML/CSS**, planejada via Figma. Apresenta:
-- Dashboards e gráficos
-- Tabelas e mensagens
+#### View
+- Exibição de dashboards, gráficos e mensagens.
+- Planejada com Figma e implementada em Streamlit + HTML.
 
-#### View (Controller)
-Gerencia requisições e lógica de negócio com Django. Executa:
-- Processamento de CSV com Pandas
-- Interação com o banco de dados
-- Renderização para o template
+#### Controller
+- Utiliza FastAPI para:
+  - Gerenciar requisições;
+  - Validar dados;
+  - Processar CSVs com Pandas;
+  - Enviar dados à View.
 
 ---
 
 ### 2.4 Metas e Restrições Arquiteturais
 
-#### Metas
-- ⚙️ **Escalabilidade**
-- ⚡ **Desempenho**
-- 🔧 **Manutenibilidade**
-- 🔒 **Segurança**
+**Metas:**
+- Escalabilidade
+- Desempenho
+- Manutenibilidade
+- Segurança
 
-#### Restrições
-- 💻 **Compatibilidade universal**
-- 🛡️ **Segurança contra acessos indevidos**
+**Restrições:**
+- Compatibilidade com múltiplas plataformas
 
 ---
 
 ### 2.5 Visão de Casos de Uso
 
-Tecnologias:
-- **Backend**: Django, Pandas, Scikit-learn
-- **Frontend**: HTML, CSS, Streamlit
-- **Banco de Dados**: SQLite
-
-#### Funcionalidades:
-- Tela inicial com menu
-- Painéis interativos em tempo real
-- Geração de relatórios automáticos
-- Previsões com ML
-- Filtros e carregamento de datasets
+O sistema inclui:
+- Menu de navegação;
+- Dashboards em tempo real;
+- Geração automática de relatórios;
+- Previsões com Machine Learning;
+- Upload de datasets;
+- Aplicação de filtros de análise.
 
 ---
 
 ### 2.6 Visão Lógica
 
-#### Componentes:
+#### Componentes
 
 - **Model**
-  - `ConjuntoDeDados`
-  - `AnaliseFinanceira`
-  - `Usuario`
-  - `LogAcesso`
+  - `ConjuntoDeDados`: arquivos CSV
+  - `AnaliseFinanceira`: análise com Pandas
+  - `Usuario`: controle de acesso
+  - `LogAcesso`: rastreamento de ações
 
-- **View (Controller)**
-  - Processa requisições
-  - Valida, salva e envia dados para template
+- **View**
+  - Criada com Streamlit, HTML e CSS
+  - Exibe dados analisados
 
-- **Template (Apresentação)**
-  - Streamlit + HTML/CSS
-  - Exibição de dashboards e alertas
+- **Controller**
+  - Processa requisições e interage com o Model
 
-#### Fluxo:
+#### Fluxo
 
-1. Usuário interage com a interface  
-2. View processa a requisição  
-3. Acessa ou modifica os dados no Model  
-4. Retorna dados tratados ao Template
+1. Usuário interage com interface
+2. Requisição é roteada no FastAPI
+3. Controller executa lógica de negócio
+4. Controller envia dados para View
+5. View apresenta resultado ao usuário
 
 ---
 
 ### 2.7 Visão de Implementação
 
-Organização modular, dividida em camadas.
+**Tecnologias e Bibliotecas:**
+- FastAPI (backend)
+- Scikit-learn (ML)
+- Pandas (análise)
+- Streamlit (UI)
+- HTML/CSS (layout)
 
-#### Bibliotecas:
-- Django
-- Pandas
-- Scikit-learn
-- Streamlit
-- HTML/CSS
+Organização modular do código para facilitar testes e manutenção.
 
 ---
 
 ### 2.8 Visão de Implantação
 
-- 🖥️ Execução local via navegador (desktop)
-- 📦 Docker para empacotamento
-- ☁️ Pronto para hospedagem futura na AWS
-- 🧩 Integração: Django + Streamlit + SQLite
+- Interface com **Streamlit + HTML/CSS**  
+- Backend com **FastAPI**  
+- Banco de dados: **SQLite**  
+- **Implantação com Docker**, preparada para futura hospedagem em **AWS**
 
 ---
 
 ### 2.9 Restrições Adicionais
 
-#### Funcionais:
-- Acesso ao site antes do login
-- Funcionalidades restritas a usuários autenticados
-
-#### Não Funcionais:
-
-| Requisito       | Descrição |
-|-----------------|-----------|
-| ✅ Usabilidade   | Interface intuitiva |
-| 📱 Portabilidade | Acessível em qualquer SO ou navegador |
-| 🔐 Segurança     | Proteção contra acessos indevidos |
-| 🧩 Manutenibilidade | Código documentado |
-| 📈 Escalabilidade | Pensado para crescimento futuro |
+- **Acesso público** à página inicial
+- **Recursos restritos a usuários logados**
+- Qualidade:
+  - Usabilidade
+  - Portabilidade
+  - Segurança
+  - Manutenibilidade
+  - Escalabilidade
 
 ---
 
-## 3. 📚 Bibliografia
+## 3. Bibliografia
 
-> Arquitetura MVC: entendendo o modelo-visão-controlador. DIO.me, 2024.  
-> Disponível em: https://www.dio.me/articles/arquitetura-mvc-entendendo-o-modelo-visao-controlador  
+> **Arquitetura MVC: entendendo o modelo-visão-controlador.** DIO.me, 2024.  
+> Disponível em: [https://www.dio.me/articles/arquitetura-mvc-entendendo-o-modelo-visao-controlador](https://www.dio.me/articles/arquitetura-mvc-entendendo-o-modelo-visao-controlador)  
 > Acesso em: 23 abril de 2025.
 
 ---
+
+> **RelatAI – Plataforma de análise financeira com geração automática de relatórios.**
