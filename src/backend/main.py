@@ -1,10 +1,6 @@
-# main.py
 from fastapi import FastAPI
-from routes import router
+from routes import router as api_router
 
-# Inicializa a aplicação FastAPI com um título personalizado
-app = FastAPI(title="API IPEA - Relatórios Inteligentes")
+app = FastAPI(title="Minha API")
 
-# Inclui as rotas definidas no arquivo routes.py
-app.include_router(router)
-
+app.include_router(api_router)  # Conecta todas as rotas

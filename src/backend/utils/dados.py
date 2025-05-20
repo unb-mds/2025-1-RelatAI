@@ -3,8 +3,8 @@ import requests
 from io import StringIO
 
 # URLs das APIs do Banco Central
-URL_SELIC = "https://api.bcb.gov.br/dados/serie/bcdata.sgs.7326/dados?formato=csv&dataInicial=12/05/2015&dataFinal=12/05/2025"
-URL_CAMBIO = "https://api.bcb.gov.br/dados/serie/bcdata.sgs.1/dados?formato=csv&dataInicial=12/05/2015&dataFinal=12/05/2025"
+URL_SELIC = "https://api.bcb.gov.br/dados/serie/bcdata.sgs.11/dados?formato=csv&dataInicial=12/05/2016"
+URL_CAMBIO = "https://api.bcb.gov.br/dados/serie/bcdata.sgs.1/dados?formato=csv&dataInicial=12/05/2016"
 URL_IPCA = "https://api.bcb.gov.br/dados/serie/bcdata.sgs.433/dados?formato=csv"
 
 # Função para carregar os dados diretamente da API
@@ -18,9 +18,9 @@ def carregar_dados():
         # Verifica se as requisições foram bem-sucedidas
         if response_selic.status_code == 200 and response_cambio.status_code == 200 and response_ipca.status_code == 200:
             # Converter respostas em DataFrame bruto
-            df_selic = pd.read_csv(StringIO(response_selic.text), sep=";", decimal=",")
-            df_cambio = pd.read_csv(StringIO(response_cambio.text), sep=";", decimal=",")
-            df_ipca = pd.read_csv(StringIO(response_ipca.text), sep=";", decimal=",")
+            df_selic = pd.read_csv(StringIO(response_selic.text), sep=";", decimal=".")
+            df_cambio = pd.read_csv(StringIO(response_cambio.text), sep=";", decimal=".")
+            df_ipca = pd.read_csv(StringIO(response_ipca.text), sep=";", decimal=".")
             
             # transformar coluna data para tipo datetime em pandas
             df_ipca['data'] = pd.to_datetime(df_ipca['data'], format="%d/%m/%Y")
@@ -35,6 +35,9 @@ def carregar_dados():
             df_cambio['ano'] = df_cambio['data'].dt.year.astype(str)
             df_ipca['ano'] = df_ipca['data'].dt.year.astype(str)
             df_selic['ano'] = df_selic['data'].dt.year.astype(str)
+
+            for df in [df_selic, df_cambio, df_ipca]:
+                df['data'] = df['data'].dt.strftime('%d-%m-%Y')
 
             return {"selic": df_selic, "cambio": df_cambio, "ipca": df_ipca}
         else:
