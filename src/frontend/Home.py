@@ -1,28 +1,112 @@
 import streamlit as st
-# from streamlit_option_menu import option_menu # Removido
+import requests
+import json
 
-# --- Inicializar estado da sessão para notificações (exemplo) ---
+# --- Inicializar estado da sessão para notificações ---
 if 'notifications' not in st.session_state:
     st.session_state.notifications = [
         {"id": 1, "message": "Alerta: Nova análise de 'Projeções Demográficas' disponível para revisão.", "read": False, "type": "info"},
         {"id": 2, "message": "Sucesso: 'Boletim Econômico Mensal' foi publicado.", "read": False, "type": "success"},
         {"id": 3, "message": "Aviso: Manutenção programada do sistema para 25/05 às 02:00.", "read": True, "type": "warning"},
     ]
+if 'last_notification_id' not in st.session_state:
+    max_id = 0
+    if st.session_state.notifications:
+        max_id = max(n['id'] for n in st.session_state.notifications)
+    st.session_state.last_notification_id = max_id
+
 
 def count_unread_notifications():
     return sum(1 for n in st.session_state.notifications if not n['read'])
+
+def get_next_notification_id():
+    st.session_state.last_notification_id += 1
+    return st.session_state.last_notification_id
+
+# --- Funções para buscar dados da API ---
+API_BASE_URL = "http://127.0.0.1:8000"
+
+def fetch_api_data(endpoint: str):
+    """Busca dados de um endpoint da API e retorna o JSON, ou None em caso de erro."""
+    try:
+        response = requests.get(f"{API_BASE_URL}/{endpoint.lstrip('/')}")
+        response.raise_for_status()
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        st.error(f"Erro de conexão ao buscar dados de '{endpoint}': {e}")
+        return None
+    except json.JSONDecodeError:
+        st.error(f"Erro ao decodificar JSON da resposta de '{endpoint}'.")
+        return None
+    except Exception as e:
+        st.error(f"Ocorreu um erro inesperado ao buscar dados de '{endpoint}': {e}")
+        return None
+
+def fetch_and_add_predictions_to_notifications():
+    """Busca previsões da API e as adiciona como notificações."""
+    predictions_data = fetch_api_data("previsao")
+    if predictions_data:
+        new_notifications_count = 0
+        for key, data in predictions_data.items():
+            if isinstance(data, dict) and "descricao" in data:
+                message = f"Previsão {key.upper()}: {data.get('descricao', 'Dados de previsão recebidos.')}"
+                notif_type = "info"
+                if "tendencia" in data:
+                    if "baixa" in data["tendencia"].lower():
+                        notif_type = "warning"
+                
+                if not any(n['message'] == message for n in st.session_state.notifications):
+                    st.session_state.notifications.insert(0, {
+                        "id": get_next_notification_id(),
+                        "message": message,
+                        "read": False,
+                        "type": notif_type
+                    })
+                    new_notifications_count +=1
+        if new_notifications_count > 0:
+            st.success(f"{new_notifications_count} novas previsões adicionadas como alertas!")
+            st.rerun()
+        else:
+            st.info("Nenhuma nova previsão para adicionar ou já existem nos alertas.")
+    else:
+        st.warning("Não foi possível buscar novas previsões no momento.")
+
+
+def fetch_and_add_general_alerts_to_notifications():
+    """Busca alertas gerais da API e os adiciona como notificações."""
+    alerts_api_data = fetch_api_data("alertas")
+    if alerts_api_data and "alertas" in alerts_api_data and isinstance(alerts_api_data["alertas"], list):
+        new_notifications_count = 0
+        for alert_message in alerts_api_data["alertas"]:
+            if not any(n['message'] == str(alert_message) for n in st.session_state.notifications):
+                st.session_state.notifications.insert(0, {
+                    "id": get_next_notification_id(),
+                    "message": str(alert_message),
+                    "read": False,
+                    "type": "warning" 
+                })
+                new_notifications_count += 1
+        if new_notifications_count > 0:
+            st.success(f"{new_notifications_count} novos alertas gerais adicionados!")
+            st.rerun()
+        else:
+            st.info("Nenhum novo alerta geral para adicionar ou já existem nos alertas.")
+    elif alerts_api_data:
+         st.info("Nenhum novo alerta geral encontrado no momento (formato de resposta inesperado).")
+    else:
+        st.warning("Não foi possível buscar novos alertas gerais no momento.")
+
 
 # --- Configuração Principal da Página ---
 st.set_page_config(
     page_title="Instituto de Pesquisa e Estatística Aplicada",
     page_icon="🏛️",
     layout="wide",
-    initial_sidebar_state="auto" # Ou "expanded" se preferir a barra lateral visível por padrão
+    initial_sidebar_state="auto"
 )
 
 # --- Cabeçalho Personalizado: Apenas Botão de Notificações ---
-# Usaremos colunas para alinhar o botão à direita
-col_title_spacer, col_notifications_btn = st.columns([0.85, 0.15]) # Ajuste as proporções conforme necessário
+col_title_spacer, col_notifications_btn = st.columns([0.85, 0.15])
 
 with col_notifications_btn:
     unread_count = count_unread_notifications()
@@ -32,23 +116,22 @@ with col_notifications_btn:
     if unread_count > 0:
         button_label = f"{notif_icon_char} Alertas ({unread_count})"
 
-    with st.popover("Alertas do Sistema", use_container_width=False, help="Clique para ver os alertas"):
+    with st.popover(button_label, use_container_width=False, help="Clique para ver os alertas"):
         st.subheader("Notificações")
         if not st.session_state.notifications:
             st.info("Nenhum alerta no momento.")
         else:
-            # Exibe notificações não lidas primeiro, depois as lidas
             unread_notifications = [n for n in st.session_state.notifications if not n['read']]
             read_notifications = [n for n in st.session_state.notifications if n['read']]
             
-            # Para manter a ordem original ao marcar como lida, iteramos sobre a lista original
-            # e aplicamos estilo. A ordenação para exibição é feita visualmente.
-            
-            # Exibir não lidas
             if unread_notifications:
-                # st.markdown("##### Não Lidas") # Opcional: título para não lidas
                 for notif in unread_notifications:
-                    original_index = st.session_state.notifications.index(notif)
+                    original_index = -1
+                    for i, item in enumerate(st.session_state.notifications): 
+                        if item['id'] == notif['id']:
+                            original_index = i
+                            break
+                    
                     icon_map = {"success": "✅", "info": "ℹ️", "warning": "⚠️", "error": "❌"}
                     msg_icon = icon_map.get(notif.get("type", "info"), "ℹ️")
                     
@@ -58,24 +141,22 @@ with col_notifications_btn:
                         with col_msg:
                             st.markdown(f"**{msg_icon} {notif['message']}**")
                         with col_action:
-                            if st.button("Lida", key=f"read_{notif['id']}", type="primary", use_container_width=True, help="Marcar como lida"):
+                            if original_index != -1 and st.button("Lida", key=f"read_{notif['id']}", type="primary", use_container_width=True, help="Marcar como lida"):
                                 st.session_state.notifications[original_index]['read'] = True
                                 st.rerun()
             
-            # Exibir lidas
             if read_notifications:
-                # st.markdown("##### Lidas") # Opcional: título para lidas
                 for notif in read_notifications:
                     icon_map = {"success": "✅", "info": "ℹ️", "warning": "⚠️", "error": "❌"}
                     msg_icon = icon_map.get(notif.get("type", "info"), "ℹ️")
                     
-                    notif_container = st.container(border=True) # Pode remover a borda para lidas se preferir
+                    notif_container = st.container(border=True) 
                     with notif_container:
                         st.markdown(f"<span style='color:grey;'>{msg_icon} {notif['message']}</span>", unsafe_allow_html=True)
             
             st.divider()
             if any(n['read'] for n in st.session_state.notifications):
-                if st.button("Limpar alertas lidos", use_container_width=True):
+                if st.button("Limpar alertas lidos", use_container_width=True, key="clear_read_notifications_home"):
                     st.session_state.notifications = [n for n in st.session_state.notifications if not n['read']]
                     st.rerun()
 
@@ -96,16 +177,15 @@ st.markdown(
     - **Bases de Dados:** (Funcionalidade futura) Explore e baixe microdados de nossas pesquisas.
 
     **Como Utilizar a Plataforma:**
-    - Para criar um novo estudo ou relatório, navegue até **Nova Análise Estatística**.
-    - Para acessar documentos existentes, visite **Consultar Publicações**.
+    - Para criar um novo estudo ou relatório, navegue até a página Nova Análise Estatística.
+    - Para acessar documentos existentes, visite a página Consultar Publicações.
 
     Utilize o menu na barra lateral para navegar pelas seções disponíveis.
     """
 )
 
-st.sidebar.info("Selecione uma página na barra lateral.") # Mensagem para a barra lateral padrão
+st.sidebar.info("Selecione uma página na barra lateral.")
 
-# Adicionar um rodapé institucional simples
 st.markdown("---")
 st.caption("© 2025 Instituto de Pesquisa e Estatística Aplicada. Todos os direitos reservados.")
 
