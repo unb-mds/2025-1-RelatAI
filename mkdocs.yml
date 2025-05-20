@@ -1,6 +1,6 @@
 site_name: RelatAI - Relatórios Inteligentes com dados IPEA
 site_url: https://unb-mds.github.io/2025-1-RelatAI
-
+use_directory_urls: true         
 
 site_description: Documentação oficial do projeto
 site_author: Sua Equipe
@@ -10,13 +10,13 @@ theme:
   favicon: mkdocs/images/iconegrafico.png
   palette:
     - scheme: default
-      primary: blue grey
+      primary: blue 
       accent: red
       toggle:
         icon: material/brightness-4
         name: Modo escuro
     - scheme: slate
-      primary: blue grey
+      primary: blue 
       accent: red
       toggle:
         icon: material/brightness-7
@@ -42,10 +42,9 @@ markdown_extensions:
   - pymdownx.tasklist
 
 nav:
-  - Home: mkdocs/index.md
+  - Home: index.md
   - Documento de Arquitetura: mkdocs/docarquitetura.md
   - Requisitos: sprints/requisitos.md
-  - Sprint padrão: sprints/sprint-padrao.md
   - Sprint 0: sprints/sprint-0.md
   - Sprint 1: sprints/sprint-1.md
   - Sprint 2: sprints/sprint-2.md
