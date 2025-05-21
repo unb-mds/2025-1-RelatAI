@@ -2,18 +2,64 @@ import pandas as pd
 import numpy as np
 
 def process_api_data(data):
-
-    if not data:
+    try:
+        if not data:
+            print("Aviso: Dados vazios recebidos da API")
+            return None
+        
+        print(f"Tipo de dados recebidos: {type(data)}")
+        
+        # Converter para DataFrame
+        df = pd.DataFrame(data)
+        print(f"Colunas no DataFrame: {df.columns.tolist()}")
+        print(f"Primeiras 2 linhas:\n{df.head(2)}")
+        
+        # Verificar se as colunas necessárias existem
+        if 'data' not in df.columns or 'valor' not in df.columns:
+            print("Aviso: Dados recebidos não contêm as colunas esperadas ('data' e 'valor')")
+            return None
+        
+        # Converter a coluna de datas para datetime
+        try:
+            df['data'] = pd.to_datetime(df['data'], dayfirst=True)
+            print("Conversão de data bem-sucedida")
+        except Exception as date_err:
+            print(f"Erro na conversão de datas: {date_err}")
+            return None
+        
+        try:
+            # Primeiro substituir vírgulas por pontos se os valores são strings
+            if df['valor'].dtype == 'object':
+                df['valor'] = df['valor'].str.replace(',', '.')
+            
+            # Então converter para números
+            df['valor'] = pd.to_numeric(df['valor'], errors='coerce')
+            print(f"NaN após conversão numérica: {df['valor'].isna().sum()}")
+        except Exception as val_err:
+            print(f"Erro na conversão de valores: {val_err}")
+            return None
+        
+        # Remover NaN
+        before_count = len(df)
+        df = df.dropna()
+        after_count = len(df)
+        print(f"Registros removidos por NaN: {before_count - after_count}")
+        
+        # Verificar se ainda há dados após limpeza
+        if df.empty or len(df) < 2:
+            print("Aviso: Dados insuficientes após limpeza")
+            return None
+        
+        # Ordenar por data
+        df = df.sort_values('data')
+        
+        print(f"Dados processados com sucesso: {len(df)} registros válidos")
+        return df
+        
+    except Exception as e:
+        import traceback
+        print(f"Erro ao processar dados da API: {str(e)}\n{traceback.format_exc()}")
         return None
-    
-    df = pd.DataFrame(data)
-    
-    df['data'] = pd.to_datetime(df['data'], dayfirst=True) 
-    df['valor'] = pd.to_numeric(df['valor'], errors='coerce')    
-    df = df.dropna()
-    df = df.sort_values('data')
-    
-    return df
 
 def calculate_statistics(df):
     if df is None or df.empty:
