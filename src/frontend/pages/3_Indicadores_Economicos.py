@@ -133,10 +133,10 @@ def display_indicator_data(indicator_name: str, api_endpoint: str, tab_container
                 # Gerar previsão
                 with st.spinner("Processando modelo de machine learning..."):
                     forecast_df = predict_future_values(
-                        historical_data, 
-                        periods=dias_futuro, 
-                        model_type="linear"
-                    )
+                    historical_data, 
+                    periods=dias_futuro, 
+                    model_type="deepseek"
+                )
     
                 
                 if forecast_df is not None:
@@ -161,8 +161,20 @@ def display_indicator_data(indicator_name: str, api_endpoint: str, tab_container
                         line_shape='spline'
                     )
                     fig.update_traces(mode='lines', line=dict(smoothing=1.3, width=3))
+
+                    # Adicionar intervalos de confiança se disponíveis
+                    if 'lower_bound' in forecast_df.columns and 'upper_bound' in forecast_df.columns:
+                        fig.add_scatter(
+                            x=forecast_df['data'],
+                            y=forecast_df['lower_bound'],
+                            fill=None,
+                            mode='lines',
+                            line_color='rgba(255,0,0,0.1)',
+                            showlegend=False
+                        )
+
+
                     st.plotly_chart(fig, use_container_width=True)
-                    
                     # Mostrar confiabilidade
                     st.subheader("Confiabilidade da Previsão")
                     fig_conf = px.line(
@@ -190,7 +202,7 @@ def display_indicator_data(indicator_name: str, api_endpoint: str, tab_container
                     col2.metric("Confiabilidade", f"{target_conf:.2%}")
                     
                     # Mostrar informações do modelo
-                    st.caption("Modelo: Random Forest Regressor")
+                    st.caption("Modelo: DeepSeek (LSTM)")
                     st.caption("⚠️ A confiabilidade da previsão diminui com o horizonte temporal")
                 else:
                     st.error("Não foi possível gerar previsões para a data selecionada.")
