@@ -8,7 +8,7 @@ def process_api_data(data):
     
     df = pd.DataFrame(data)
     
-    df['data'] = pd.to_datetime(df['data'])    
+    df['data'] = pd.to_datetime(df['data'], dayfirst=True) 
     df['valor'] = pd.to_numeric(df['valor'], errors='coerce')    
     df = df.dropna()
     df = df.sort_values('data')
