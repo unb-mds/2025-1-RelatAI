@@ -117,7 +117,7 @@ def save_model(model, scaler, indicator_name, model_dir=None):
 def load_model(indicator_name, model_dir=None):
     
     if model_dir is None:
-        model_dir = os.path.join(os.path.dirname(__file__), '..', '..', 'back', 'ipea', 'financeiro', 'ML', 'models')
+        model_dir = os.path.join(os.path.dirname(__file__), '..', '..', 'back', 'ipea', 'financeiro', 'mL', 'models')
     
     model_path = os.path.join(model_dir, f"{indicator_name}_model.pkl")
     scaler_path = os.path.join(model_dir, f"{indicator_name}_scaler.pkl")
