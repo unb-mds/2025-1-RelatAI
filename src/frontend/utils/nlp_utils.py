@@ -38,7 +38,6 @@ def detect_trend(data, window=5):
 
 
 def generate_market_insights(data, indicator_name):
-  
     try:
         # Processar dados se não for DataFrame
         if not isinstance(data, pd.DataFrame):
@@ -58,6 +57,7 @@ def generate_market_insights(data, indicator_name):
         current = df['valor'].iloc[-1]
         mean = stats['média']
         relation = "acima" if current > mean else "abaixo"
+        percent_of_mean = (current / mean * 100) if mean != 0 else 0
         
         # Personalizar insights baseados no indicador e tendência
         insights = {
@@ -67,7 +67,7 @@ def generate_market_insights(data, indicator_name):
                 "estável": f"**SELIC estável:**\n\nA taxa SELIC permanece relativamente estável. A manutenção destes patamares indica política monetária de cautela pelo Banco Central, buscando equilíbrio entre controle inflacionário e crescimento econômico."
             },
             "IPCA": {
-                "alta": f"**IPCA em alta:**\n\nO índice de preços ao consumidor amplo (IPCA) mostra tendência de alta, sinalizando aumento da inflação. Este cenário pode levar o Banco Central a aumentar os juros para conter a pressão inflacionária.",
+                "alta": f"**IPCA com tendência de alta:**\n\nO índice de preços ao consumidor amplo (IPCA) mostra tendência de alta recente, o que pode indicar aumento das pressões inflacionárias. ",
                 "queda": f"**IPCA em queda:**\n\nO IPCA apresenta tendência de queda, indicando redução na pressão inflacionária. Esta situação pode abrir espaço para política monetária mais flexível e possível redução da taxa SELIC.",
                 "estável": f"**IPCA estável:**\n\nO IPCA mostra-se estável recentemente, sugerindo que as pressões inflacionárias estão controladas. Isto pode favorecer a manutenção da atual política monetária pelo Banco Central."
             },
@@ -85,12 +85,19 @@ def generate_market_insights(data, indicator_name):
             base_insight = f"Análise de tendência para {indicator_name}: {trend}."
         
         # Adicionar contexto sobre média histórica
-        additional_context = f"\n\nO valor atual ({current:.2f}) está {relation} da média histórica ({mean:.2f})."
+        additional_context = f"\n\nO valor atual ({current:.2f}) está {relation} da média histórica ({mean:.2f})"
+        
+        # Adicionar contexto percentual para IPCA
+        if indicator_name.upper() == "IPCA":
+            additional_context += f", representando aproximadamente {percent_of_mean:.1f}% da média histórica."
+        else:
+            additional_context += "."
         
         return base_insight + additional_context
         
     except Exception as e:
         return f"Não foi possível gerar insights para {indicator_name}. Erro: {str(e)}"
+    
 
 def generate_forecast_analysis(forecast_df, indicator_name):
     """
