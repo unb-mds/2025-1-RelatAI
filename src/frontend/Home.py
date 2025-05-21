@@ -118,6 +118,18 @@ with col_notifications_btn:
 
     with st.popover(button_label, use_container_width=False, help="Clique para ver os alertas"):
         st.subheader("Notificações")
+
+        # Botão para atualizar alertas e previsões dentro do popover
+        if st.button("🔄 Atualizar Alertas e Previsões", key="refresh_notifications_popover", use_container_width=True):
+            with st.spinner("Buscando atualizações..."):
+                # Chamamos as duas funções para buscar dados e adicioná-los às notificações
+                fetch_and_add_predictions_to_notifications() # Para /previsao
+                fetch_and_add_general_alerts_to_notifications() # Para /alertas
+            # Não é necessário st.rerun() aqui, pois as funções de fetch já fazem isso se adicionarem novas notificações.
+            # Se elas não adicionarem nada, o popover simplesmente se redesenha com os dados atuais.
+
+        st.divider() # Separador visual
+
         if not st.session_state.notifications:
             st.info("Nenhum alerta no momento.")
         else:
