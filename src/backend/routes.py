@@ -1,6 +1,9 @@
-from fastapi import FastAPI, HTTPException, Query, APIRouter
+from fastapi import FastAPI, HTTPException, Query, APIRouter, Body
 from utils.dados import carregar_dados, atualizar_dados, filtrar_por_ano_mes
 from utils.alertas import *
+from ml.ml_models import predict_future_values  # Importar a função do novo local
+from typing import List, Dict, Any, Optional
+from pydantic import BaseModel
 
 router = APIRouter()
 
@@ -10,6 +13,12 @@ if dados:
     dados = atualizar_dados(dados["selic"], dados["cambio"], dados["ipca"])
 else:
     raise RuntimeError("Não foi possível carregar os dados iniciais.")
+
+class PredictionRequest(BaseModel):
+    historical_data: List[Dict[str, Any]]
+    periods: int = 90
+    window_size: int = 15
+    model_type: str = "deepseek"
 
 @router.get("/selic")
 def get_selic():
@@ -31,6 +40,30 @@ def get_filtrado(tipo: str, ano: str = Query(...), mes: str = Query(...)):
     df = dados[tipo]
     filtrado = filtrar_por_ano_mes(df, ano, mes)
     return filtrado.to_dict(orient="records")
+
+@router.post("/predict/{indicator_name}")
+async def predict_indicator(indicator_name: str, request: PredictionRequest):
+    """
+    Gera previsões para um indicador econômico
+    """
+    try:
+        forecast_df = predict_future_values(
+            request.historical_data,
+            periods=request.periods,
+            window_size=request.window_size,
+            model_type=request.model_type
+        )
+        
+        if forecast_df is None:
+            raise HTTPException(status_code=400, detail="Não foi possível gerar previsões")
+            
+        result = forecast_df.copy()
+        result['data'] = result['data'].dt.strftime('%Y-%m-%d')
+        
+        return result.to_dict(orient='records')
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro ao gerar previsão: {str(e)}")
 
 @router.get("/alertas")
 def rota_alertas():
