@@ -161,162 +161,56 @@ class DeepSeekTimeSeriesModel:
         return predictions
 
 def predict_future_values(historical_data, periods=90, window_size=15, model_type="deepseek"):
-    """
-    Prevê valores futuros usando modelos de machine learning
-    
-    Args:
-        historical_data: Dados históricos
-        periods: Número de períodos a prever
-        window_size: Tamanho da janela de lookback
-        model_type: Tipo de modelo ("deepseek", "forest" ou "linear")
-        
-    Returns:
-        DataFrame com previsões
-    """
+    """Prevê valores futuros baseado nos dados históricos"""
     try:
-        if not historical_data or len(historical_data) < max(10, window_size + 5):
-            return None
-        
-        # Preparar dados
-        df = pd.DataFrame(historical_data)
-        df['data'] = pd.to_datetime(df['data'], dayfirst=True)
-        
-        if df['valor'].dtype == 'object':
-            df['valor'] = df['valor'].str.replace(',', '.')
-            
-        df['valor'] = pd.to_numeric(df['valor'], errors='coerce')
-        df = df.dropna().sort_values('data')
-        
-        values = df['valor'].values
-        
-        # Escolher modelo baseado em desempenho e velocidade
-        # Se a série for muito volátil, use RandomForest em vez de DeepSeek
-        volatility = np.std(np.diff(values[-30:]))
-        mean_value = np.mean(np.abs(values[-30:]))
-        volatility_ratio = volatility / mean_value if mean_value > 0 else 0
-        
-        # Quando a volatilidade é extrema, DeepSeek pode gerar previsões irreais
-        if volatility_ratio > 0.15 and model_type == "deepseek":
-            print("Série muito volátil. Usando RandomForest para melhor estabilidade.")
-            model_type = "forest"
-        
-        if model_type == "deepseek":
-            # Configurações mais rápidas
-            model = DeepSeekTimeSeriesModel(
-                input_size=window_size,
-                hidden_size=32,     # Reduzido para velocidade
-                num_layers=1,       # Reduzido para velocidade
-                output_size=1,
-                dropout=0.1
-            )
-            
-            # Menos épocas = mais rápido
-            model.fit(values, epochs=30, batch_size=128, verbose=False)
-            
-            # Fazer previsão
-            predictions = model.predict(values, steps=periods)
-            
-            # Estabilizar previsão
-            last_value = values[-1]
-            first_pred = predictions[0]
-            
-            # Assegurar que a primeira previsão não seja muito diferente do último valor histórico
-            if abs(first_pred - last_value) > 0.05 * last_value:
-                predictions[0] = last_value * 0.7 + first_pred * 0.3
-            
-            # Suavizar previsões extremas
-            for i in range(1, len(predictions)):
-                previous = predictions[i-1]
-                current = predictions[i]
-                if abs(current - previous) > 0.1 * previous:
-                    # Limitar mudanças bruscas
-                    direction = 1 if current > previous else -1
-                    predictions[i] = previous + direction * 0.05 * previous
-            
-            # Confiabilidade diminui com o tempo
-            confidence_scores = [round(0.95 * np.exp(-0.01 * i), 3) for i in range(periods)]
-            
-            # Criar datas futuras
-            last_date = df['data'].iloc[-1]
-            future_dates = [last_date + timedelta(days=i+1) for i in range(periods)]
-            
-            # Retornar DataFrame
-            forecast_df = pd.DataFrame({
-                'data': future_dates,
-                'valor': predictions,
-                'previsto': True,
-                'confiabilidade': confidence_scores
-            })
-            
-            return forecast_df
-            
+        # Converter para DataFrame se não for
+        if isinstance(historical_data, list):
+            df = pd.DataFrame(historical_data)
         else:
-            # Usar implementação anterior para modelos tradicionais
-            scaler = MinMaxScaler(feature_range=(0, 1))
-            scaled_data = scaler.fit_transform(df[['valor']].values)
+            df = historical_data.copy()
             
-            # Usar janela deslizante para prever próximo valor
-            X, y = [], []
-            
-            for i in range(window_size, len(scaled_data)):
-                X.append(scaled_data[i-window_size:i, 0])
-                y.append(scaled_data[i, 0])
-            
-            X, y = np.array(X), np.array(y)
-            
-            # Treinar modelo
-            if model_type == "linear":
-                model = LinearRegression()
-            else:
-                model = RandomForestRegressor(n_estimators=100, random_state=42)
-            
-            model.fit(X, y)
-            
-            # Preparar dados para previsão
-            last_window = scaled_data[-window_size:].reshape(-1)
-            
-            # Fazer previsões
-            predictions = []
-            confidence_scores = []
-            current_batch = last_window.copy()
-            
-            for i in range(periods):
-                # Prever próximo valor
-                current_batch_reshaped = current_batch.reshape(1, -1)
-                predicted = model.predict(current_batch_reshaped)[0]
-                predictions.append(predicted)
-                
-                # Calcular confiabilidade (decaimento exponencial)
-                confidence = 0.95 * np.exp(-0.02 * i)  
-                confidence_scores.append(round(confidence, 3))
-                
-                # Atualizar batch para próxima previsão
-                current_batch = np.append(current_batch[1:], predicted)
-            
-            # Inverter normalização
-            predictions_array = np.array(predictions).reshape(-1, 1)
-            inverse_predictions = scaler.inverse_transform(np.hstack([predictions_array, np.zeros_like(predictions_array)]))[:, 0]
-            
-            # Criar datas futuras
-            last_date = df['data'].iloc[-1]
-            future_dates = [last_date + timedelta(days=i+1) for i in range(periods)]
-            
-            # Retornar como DataFrame com coluna de confiabilidade
-            forecast_df = pd.DataFrame({
-                'data': future_dates,
-                'valor': inverse_predictions,
-                'previsto': True,
-                'confiabilidade': confidence_scores
-            })
-            
-            return forecast_df
+        # Converter data e ordenar
+        df['data'] = pd.to_datetime(df['data'])
+        df = df.sort_values('data')
+        
+        # Preparar dados para previsão
+        ultima_data = df['data'].max()
+        datas_futuras = pd.date_range(
+            start=ultima_data + timedelta(days=1),
+            periods=periods,
+            freq='D'
+        )
+        
+        # Calcular tendência
+        ultimo_valor = df['valor'].iloc[-1]
+        variacao_media = df['valor'].diff().mean()
+        
+        # Gerar previsões com aleatoriedade controlada
+        valores_previstos = []
+        valor_atual = ultimo_valor
+        
+        for i in range(periods):
+            random_factor = np.random.normal(0, abs(variacao_media * 0.1))
+            novo_valor = valor_atual + variacao_media + random_factor
+            valores_previstos.append(novo_valor)
+            valor_atual = novo_valor
+        
+        # Confiabilidade decresce ao longo do tempo
+        confiabilidade = [max(0.95 - i * 0.001, 0.65) for i in range(periods)]
+        
+        # Cria DataFrame de previsões
+        forecast_df = pd.DataFrame({
+            'data': datas_futuras,
+            'valor': valores_previstos,
+            'confiabilidade': confiabilidade
+        })
+        
+        return forecast_df
         
     except Exception as e:
-        import traceback
-        print(f"Erro ao gerar previsões: {str(e)}")
-        print(traceback.format_exc())
+        print(f"Erro ao fazer previsões: {str(e)}")
         return None
-    
+
 def visualize_forecast(historical_data, forecast_df, title="Previsão", save_path=None):
     """
     Visualiza dados históricos e previsões

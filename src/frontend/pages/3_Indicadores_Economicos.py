@@ -133,10 +133,9 @@ def display_indicator_data(indicator_name: str, api_endpoint: str, tab_container
                 # Gerar previsão
                 with st.spinner("Processando modelo de machine learning..."):
                     forecast_df = predict_future_values(
-                    historical_data, 
-                    periods=dias_futuro, 
-                    model_type="deepseek"
-                )
+                        df,  # Pass DataFrame directly
+                        periods=dias_futuro
+                    )
     
                 
                 if forecast_df is not None:
