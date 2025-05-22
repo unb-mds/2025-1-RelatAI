@@ -144,9 +144,16 @@ def display_indicator_data(indicator_name: str, api_endpoint: str, tab_container
                     df_historical = df.copy().tail(30)  # últimos 30 dias
                     df_historical['tipo'] = 'histórico'
                     
+                    # Obter o último ponto do histórico para criar conexão
+                    last_historical_point = df_historical.iloc[-1:].copy()
+                    last_historical_point['tipo'] = 'previsto'
+                    
+                    # Adicionar o último ponto histórico no início da previsão
                     forecast_display = forecast_df.copy()
                     forecast_display['tipo'] = 'previsto'
+                    forecast_display = pd.concat([last_historical_point, forecast_display])
                     
+                    # Combinar os dados
                     combined_df = pd.concat([df_historical, forecast_display])
                     
                     # Mostrar gráfico com dados históricos e previsão
@@ -158,7 +165,7 @@ def display_indicator_data(indicator_name: str, api_endpoint: str, tab_container
                         color='tipo',
                         color_discrete_map={'histórico': 'blue', 'previsto': 'red'},
                         title=f"Histórico recente e Previsão - {indicator_name}",
-                        line_shape='spline'
+                        line_shape='spline'  # Suavizar linhas
                     )
                     fig.update_traces(mode='lines', line=dict(smoothing=1.3, width=3))
 
