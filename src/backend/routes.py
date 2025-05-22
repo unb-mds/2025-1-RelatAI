@@ -1,6 +1,5 @@
 from fastapi import FastAPI, HTTPException, Query, APIRouter
 from utils.dados import carregar_dados, atualizar_dados, filtrar_por_ano_mes
-from nlp import gerar_analises
 from utils.alertas import *
 
 router = APIRouter()
@@ -32,10 +31,6 @@ def get_filtrado(tipo: str, ano: str = Query(...), mes: str = Query(...)):
     df = dados[tipo]
     filtrado = filtrar_por_ano_mes(df, ano, mes)
     return filtrado.to_dict(orient="records")
-
-@router.get("/previsao")
-def previsoes():
-    return gerar_analises()
 
 @router.get("/alertas")
 def rota_alertas():
