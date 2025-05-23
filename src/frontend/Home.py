@@ -197,8 +197,7 @@ st.markdown(
 
 st.sidebar.info("Selecione uma página na barra lateral.")
 
-st.markdown("---")
-st.caption("© 2025 Instituto de Pesquisa e Estatística Aplicada. Todos os direitos reservados.")
+
 
 # Conteúdo principal da página inicial
 # Adiciona as três seções principais: Macroeconômico, Regional e Social
@@ -237,8 +236,8 @@ st.markdown("---") # Linha divisória
 st.markdown("""
 Os dados disponibilizados no Ipeadata são de uso público. É permitida sua reprodução e utilização em tabelas, gráficos, mapas e textos, desde que o Ipeadata seja citado.
 
-Para consulta aos dados do Ipeadata, use a **API Ipeadata**, as bibliotecas em **R (ipeadatar)**, **Python (ipeadatapy)** ou **Excel (versão 1.15.5)**.
-""")
+Para consulta aos dados do Ipeadata, use a <a href="http://www.ipeadata.gov.br/api" target="_blank">API Ipeadata</a>, as bibliotecas em <a href="https://cran.r-project.org/package=ipeadatar" target="_blank">R (ipeadatar)</a>, <a href="https://pypi.org/project/ipeadatapy/" target="_blank">Python (ipeadatapy)</a> ou <a href="http://ipeadata.gov.br/doc/api_IPEA_v1_15_5.xlsm" target="_blank">Excel (versão 1.15.5)</a>.
+""", unsafe_allow_html=True)
 st.markdown("### Séries mais acessadas")
 # Placeholder para as séries mais acessadas - pode ser preenchido dinamicamente no futuro
 col1_series, col2_series, col3_series = st.columns(3)
