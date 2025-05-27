@@ -10,7 +10,7 @@ import os
 # Adicionar diretório utils ao path
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.data_processing import process_api_data, calculate_statistics
-from utils.ml_models import predict_future_values
+from utils.ml_client import predict_future_values
 from utils.nlp_utils import generate_market_insights, generate_forecast_analysis
 
 # --- Configuração da Página ---
