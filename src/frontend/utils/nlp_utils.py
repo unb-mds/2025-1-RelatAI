@@ -69,6 +69,9 @@ def format_value_with_unit(value, indicator_name):
             return f"R$ {value/1000:.2f} tri"
         else:
             return f"R$ {value:.2f} bi"
+    elif indicator == "DESEMPREGO":
+        return f"{value:.2f}%"
+
     else:
         return f"{value:.2f}"
 
@@ -247,7 +250,39 @@ def generate_market_insights(df, indicator_name):
             else:
                 insights.append("A estabilidade na dívida pública sugere manutenção do atual cenário fiscal.")
 
-
+        # Desemprego
+        elif indicator_name.upper() == "DESEMPREGO":
+            # Determinar situação do desemprego
+            if latest_value > 12:
+                status = "muito elevado"
+            elif latest_value > 9:
+                status = "elevado"
+            elif latest_value > 7:
+                status = "moderado"
+            elif latest_value > 5:
+                status = "baixo"
+            else:
+                status = "muito baixo"
+                
+            # Tendência
+            trend = "alta" if recent_trend > 0 else "estável" if abs(recent_trend) < 0.1 else "queda"
+            
+            # Insights
+            insights = [
+                f"A taxa de desemprego está em nível {status}, com {format_value_with_unit(latest_value, 'DESEMPREGO')}.",
+                f"A tendência recente mostra {trend} no índice de desemprego."
+            ]
+            
+            # Comparação com média
+            insights.append(f"O valor atual está {'acima' if diff_percent > 0 else 'abaixo'} da média histórica ({format_value_with_unit(mean_value, 'DESEMPREGO')}) em {abs(diff_percent):.2f}%.")
+            
+            # Análise contextual
+            if status in ["elevado", "muito elevado"] and trend != "queda":
+                insights.append("Este cenário pode indicar uma desaceleração econômica ou dificuldades estruturais no mercado de trabalho.")
+            elif status in ["baixo", "muito baixo"] and trend != "alta":
+                insights.append("Este cenário sugere um mercado de trabalho aquecido e boas condições econômicas gerais.")
+            else:
+                insights.append("Estes níveis de desemprego estão alinhados com a tendência histórica recente do mercado de trabalho brasileiro.")
 
 
 
@@ -332,6 +367,11 @@ def generate_forecast_analysis(forecast_df, indicator_name):
                 "alta": f"**Previsão indica crescimento da dívida pública:**\n\nO modelo prevê que a dívida pública deve {direction} nos próximos períodos, atingindo aproximadamente {end_value_formatted}. Este cenário pode indicar aumento nas necessidades de financiamento do governo.",
                 "queda": f"**Previsão indica redução da dívida pública:**\n\nO modelo prevê que a dívida pública tende a {direction} nos próximos períodos, podendo chegar a {end_value_formatted}. Esta tendência pode sinalizar uma política fiscal mais restritiva ou aumento de arrecadação.",
                 "estabilidade": f"**Previsão de dívida pública estável:**\n\nO modelo prevê que a dívida pública deve {direction} nos próximos períodos, oscilando próximo a {end_value_formatted}. Esta estabilidade sugere manutenção do atual cenário fiscal."
+            },
+            "DESEMPREGO": {
+                "alta": f"**Previsão indica aumento do desemprego:**\n\nO modelo prevê que a taxa de desemprego deve {direction} nos próximos {len(forecast_df)} dias, atingindo aproximadamente {end_value_formatted}. Esta tendência pode indicar desaquecimento da economia e maior pressão no mercado de trabalho.",
+                "queda": f"**Previsão indica redução do desemprego:**\n\nO modelo prevê que a taxa de desemprego tende a {direction} nos próximos períodos, podendo chegar a {end_value_formatted}. Esta tendência pode sinalizar uma recuperação econômica e maior dinamismo no mercado de trabalho.",
+                "estabilidade": f"**Previsão de desemprego estável:**\n\nO modelo prevê que a taxa de desemprego deve {direction} nos próximos períodos, oscilando próximo a {end_value_formatted}. Esta estabilidade sugere manutenção das condições atuais do mercado de trabalho."
             }
         }
 
