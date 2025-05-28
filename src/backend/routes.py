@@ -11,7 +11,7 @@ dados = carregar_dados()
 
 if dados:
     # Atualização para incluir o PIB
-    dados = atualizar_dados(dados["selic"], dados["cambio"], dados["ipca"], dados["pib"], dados["divida"])
+    dados = atualizar_dados(dados["selic"], dados["cambio"], dados["ipca"], dados["pib"], dados["divida"], dados["desemprego"])
 else:
     raise RuntimeError("Não foi possível carregar os dados iniciais.")
 
@@ -41,10 +41,14 @@ def get_pib():
 def get_divida():
     return dados["divida"].to_dict(orient="records")
 
+@router.get("/desemprego")
+def get_desemprego():
+    return dados["desemprego"].to_dict(orient="records")
+
 @router.get("/filtro/{tipo}")
 def get_filtrado(tipo: str, ano: str = Query(...), mes: str = Query(...)):
-    if tipo not in ["selic", "cambio", "ipca", "pib", "divida"]:  
-        raise HTTPException(status_code=400, detail="Tipo deve ser: selic, cambio, ipca, pib ou divida")
+    if tipo not in ["selic", "cambio", "ipca", "pib", "divida", "desemprego"]:  
+        raise HTTPException(status_code=400, detail="Tipo deve ser: selic, cambio, ipca, pib, divida ou desemprego")
 
     if tipo == "pib":
         # PIB deve usar trimestre em vez de mês
@@ -75,9 +79,9 @@ async def predict_indicator(indicator_name: str, request: PredictionRequest):
     Gera previsões para um indicador econômico
     """
     # Validar se o indicator_name é válido
-    if indicator_name.lower() not in ["selic", "cambio", "ipca", "pib", "divida"]:
-        raise HTTPException(status_code=400, detail="Indicador deve ser: selic, cambio, ipca, pib ou divida")
-    
+    if indicator_name.lower() not in ["selic", "cambio", "ipca", "pib", "divida", "desemprego"]:
+        raise HTTPException(status_code=400, detail="Indicador deve ser: selic, cambio, ipca, pib, divida ou desemprego")
+
     try:
         # Verificar se há dados históricos suficientes
         if len(request.historical_data) < request.window_size * 2:
