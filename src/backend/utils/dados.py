@@ -7,6 +7,7 @@ URL_SELIC = "https://api.bcb.gov.br/dados/serie/bcdata.sgs.11/dados?formato=csv&
 URL_CAMBIO = "https://api.bcb.gov.br/dados/serie/bcdata.sgs.1/dados?formato=csv&dataInicial=12/05/2016"
 URL_IPCA = "https://api.bcb.gov.br/dados/serie/bcdata.sgs.433/dados?formato=csv"
 URL_PIB = "https://api.bcb.gov.br/dados/serie/bcdata.sgs.4380/dados?formato=csv&dataInicial=01/01/2010"
+URL_DIVIDA = "https://api.bcb.gov.br/dados/serie/bcdata.sgs.13762/dados?formato=csv&dataInicial=01/01/2010"
 
 # Função para carregar os dados diretamente da API
 def carregar_dados():
@@ -16,43 +17,49 @@ def carregar_dados():
         response_cambio = requests.get(URL_CAMBIO)
         response_ipca = requests.get(URL_IPCA)
         response_pib = requests.get(URL_PIB)
+        response_divida = requests.get(URL_DIVIDA)
 
         # Verifica se as requisições foram bem-sucedidas
         if (response_selic.status_code == 200 and 
             response_cambio.status_code == 200 and 
             response_ipca.status_code == 200 and
-            response_pib.status_code == 200):
-            
+            response_pib.status_code == 200 and
+            response_divida.status_code == 200):
+
             # Converter respostas em DataFrame bruto
             df_selic = pd.read_csv(StringIO(response_selic.text), sep=";", decimal=".")
             df_cambio = pd.read_csv(StringIO(response_cambio.text), sep=";", decimal=".")
             df_ipca = pd.read_csv(StringIO(response_ipca.text), sep=";", decimal=".")
             df_pib = pd.read_csv(StringIO(response_pib.text), sep=";", decimal=".")
+            df_divida = pd.read_csv(StringIO(response_divida.text), sep=";", decimal=".")
             
             # transformar coluna data para tipo datetime em pandas
             df_ipca['data'] = pd.to_datetime(df_ipca['data'], format="%d/%m/%Y")
             df_cambio['data'] = pd.to_datetime(df_cambio['data'], format="%d/%m/%Y")
             df_selic['data'] = pd.to_datetime(df_selic['data'], format="%d/%m/%Y")
             df_pib['data'] = pd.to_datetime(df_pib['data'], format="%d/%m/%Y")
+            df_divida['data'] = pd.to_datetime(df_divida['data'], format="%d/%m/%Y")
 
             # criando coluna mês e ano
             df_cambio['mes'] = df_cambio['data'].dt.month_name()
             df_ipca['mes'] = df_ipca['data'].dt.month_name()
             df_selic['mes'] = df_selic['data'].dt.month_name()
             df_pib['mes'] = df_pib['data'].dt.month_name()
+            df_divida['mes'] = df_divida['data'].dt.month_name()
 
             df_cambio['ano'] = df_cambio['data'].dt.year.astype(str)
             df_ipca['ano'] = df_ipca['data'].dt.year.astype(str)
             df_selic['ano'] = df_selic['data'].dt.year.astype(str)
             df_pib['ano'] = df_pib['data'].dt.year.astype(str)
-            
+            df_divida['ano'] = df_divida['data'].dt.year.astype(str)
+
             # Adicionar coluna de trimestre para o PIB
             df_pib['trimestre'] = df_pib['data'].dt.quarter.astype(str)
 
-            for df in [df_selic, df_cambio, df_ipca, df_pib]:
+            for df in [df_selic, df_cambio, df_ipca, df_pib, df_divida]:
                 df['data'] = df['data'].dt.strftime('%d-%m-%Y')
 
-            return {"selic": df_selic, "cambio": df_cambio, "ipca": df_ipca, "pib": df_pib}
+            return {"selic": df_selic, "cambio": df_cambio, "ipca": df_ipca, "pib": df_pib, "divida": df_divida}
         else:
             raise Exception("Erro ao acessar as APIs do Banco Central.")
     except Exception as e:
@@ -62,7 +69,7 @@ def carregar_dados():
 from datetime import timedelta
 
 # Função para atualizar os DataFrames existentes com novos dados da API
-def atualizar_dados(df_selic, df_cambio, df_ipca, df_pib):
+def atualizar_dados(df_selic, df_cambio, df_ipca, df_pib, df_divida):
     try:
         # Converter strings de data para datetime para processamento
         if isinstance(df_selic['data'].iloc[0], str):
@@ -73,18 +80,22 @@ def atualizar_dados(df_selic, df_cambio, df_ipca, df_pib):
             df_ipca['data'] = pd.to_datetime(df_ipca['data'], format='%d-%m-%Y')
         if isinstance(df_pib['data'].iloc[0], str):
             df_pib['data'] = pd.to_datetime(df_pib['data'], format='%d-%m-%Y')
+        if isinstance(df_divida['data'].iloc[0], str):  # Adicionado
+            df_divida['data'] = pd.to_datetime(df_divida['data'], format='%d-%m-%Y')
             
         # Obtém a última data de cada DataFrame
         ultima_data_selic = df_selic['data'].max()
         ultima_data_cambio = df_cambio['data'].max()
         ultima_data_ipca = df_ipca['data'].max()
         ultima_data_pib = df_pib['data'].max()
+        ultima_data_divida = df_divida['data'].max() 
 
         # Define a data inicial para a próxima consulta (um dia após o último dado)
         data_inicial_selic = (ultima_data_selic + timedelta(days=1)).strftime("%d/%m/%Y")
         data_inicial_cambio = (ultima_data_cambio + timedelta(days=1)).strftime("%d/%m/%Y")
         data_inicial_ipca = (ultima_data_ipca + timedelta(days=1)).strftime("%d/%m/%Y")
         data_inicial_pib = (ultima_data_pib + timedelta(days=1)).strftime("%d/%m/%Y")
+        data_inicial_divida = (ultima_data_divida + timedelta(days=1)).strftime("%d/%m/%Y")
 
         data_final = pd.Timestamp.today().strftime("%d/%m/%Y")
 
@@ -93,12 +104,14 @@ def atualizar_dados(df_selic, df_cambio, df_ipca, df_pib):
         url_cambio = f"https://api.bcb.gov.br/dados/serie/bcdata.sgs.1/dados?formato=csv&dataInicial={data_inicial_cambio}&dataFinal={data_final}"
         url_ipca = f"https://api.bcb.gov.br/dados/serie/bcdata.sgs.433/dados?formato=csv&dataInicial={data_inicial_ipca}&dataFinal={data_final}"
         url_pib = f"https://api.bcb.gov.br/dados/serie/bcdata.sgs.4380/dados?formato=csv&dataInicial={data_inicial_pib}&dataFinal={data_final}"
+        url_divida = f"https://api.bcb.gov.br/dados/serie/bcdata.sgs.13762/dados?formato=csv&dataInicial={data_inicial_divida}&dataFinal={data_final}"
 
         # Requisições
         response_selic = requests.get(url_selic)
         response_cambio = requests.get(url_cambio)
         response_ipca = requests.get(url_ipca)
         response_pib = requests.get(url_pib)
+        response_divida = requests.get(url_divida)
 
         # Verificação para SELIC, CÂMBIO e IPCA (como já estava)
         if response_selic.status_code == 200:
@@ -125,7 +138,6 @@ def atualizar_dados(df_selic, df_cambio, df_ipca, df_pib):
                 novos_dados_ipca['ano'] = novos_dados_ipca['data'].dt.year.astype(str)
                 df_ipca = pd.concat([df_ipca, novos_dados_ipca]).drop_duplicates(subset='data')
         
-        # Nova verificação para o PIB
         if response_pib.status_code == 200:
             novos_dados_pib = pd.read_csv(StringIO(response_pib.text), sep=";", decimal=",")
             if not novos_dados_pib.empty:
@@ -134,22 +146,30 @@ def atualizar_dados(df_selic, df_cambio, df_ipca, df_pib):
                 novos_dados_pib['ano'] = novos_dados_pib['data'].dt.year.astype(str)
                 novos_dados_pib['trimestre'] = novos_dados_pib['data'].dt.quarter.astype(str)
                 df_pib = pd.concat([df_pib, novos_dados_pib]).drop_duplicates(subset='data')
+
+        if response_divida.status_code == 200:
+            novos_dados_divida = pd.read_csv(StringIO(response_divida.text), sep=";", decimal=",")
+            if not novos_dados_divida.empty:
+                novos_dados_divida['data'] = pd.to_datetime(novos_dados_divida['data'], format="%d/%m/%Y")
+                novos_dados_divida['mes'] = novos_dados_divida['data'].dt.month_name()
+                novos_dados_divida['ano'] = novos_dados_divida['data'].dt.year.astype(str)
+                df_divida = pd.concat([df_divida, novos_dados_divida]).drop_duplicates(subset='data')
         
         # Converter datas de volta para string no formato consistente
-        for df in [df_selic, df_cambio, df_ipca, df_pib]:
+        for df in [df_selic, df_cambio, df_ipca, df_pib, df_divida]:
             if not isinstance(df['data'].iloc[0], str):
                 df['data'] = df['data'].dt.strftime('%d-%m-%Y')
                 
         # Retorna todos os DataFrames atualizados
-        return {"selic": df_selic, "cambio": df_cambio, "ipca": df_ipca, "pib": df_pib}
+        return {"selic": df_selic, "cambio": df_cambio, "ipca": df_ipca, "pib": df_pib, "divida": df_divida}
 
     except Exception as e:
         print(f"Erro ao atualizar os dados: {e}")
         # Converter datas de volta para string se necessário
-        for df in [df_selic, df_cambio, df_ipca, df_pib]:
+        for df in [df_selic, df_cambio, df_ipca, df_pib, df_divida]:  # Atualizado
             if not isinstance(df['data'].iloc[0], str):
                 df['data'] = df['data'].dt.strftime('%d-%m-%Y')
-        return {"selic": df_selic, "cambio": df_cambio, "ipca": df_ipca, "pib": df_pib}
+        return {"selic": df_selic, "cambio": df_cambio, "ipca": df_ipca, "pib": df_pib, "divida": df_divida}
 
 
 # Função de filtro por ano e mês
