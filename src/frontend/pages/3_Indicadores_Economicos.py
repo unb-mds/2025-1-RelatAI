@@ -59,12 +59,19 @@ def format_indicator_value(value, indicator_name):
             return f"R$ {value/1000:.2f} tri"
         else:
             return f"R$ {value:.2f} bi"
+        
+    elif indicator == "DÍVIDA PÚBLICA" or indicator == "DIVIDA" or indicator == "DÍVIDA":
+        # Dívida pública em bilhões ou trilhões, similar ao PIB
+        if value >= 1000:
+            return f"R$ {value/1000:.2f} tri"
+        else:
+            return f"R$ {value:.2f} bi"
     else:
         # Formato padrão para outros indicadores
         return f"{value:.2f}"
 
 # --- Seção para exibir os indicadores ---
-tab_selic, tab_ipca, tab_cambio, tab_pib = st.tabs(["SELIC", "IPCA", "Câmbio", "PIB"])
+tab_selic, tab_ipca, tab_cambio, tab_pib, tab_divida = st.tabs(["SELIC", "IPCA", "Câmbio", "PIB", "Dívida Pública"])
 
 def display_indicator_data(indicator_name: str, api_endpoint: str, tab_container):
     with tab_container:
@@ -242,6 +249,7 @@ def display_indicator_data(indicator_name: str, api_endpoint: str, tab_container
 display_indicator_data("SELIC", "selic", tab_selic)
 display_indicator_data("IPCA", "ipca", tab_ipca)
 display_indicator_data("Câmbio", "cambio", tab_cambio)
+display_indicator_data("Dívida Pública", "divida", tab_divida)
 
 # --- Função para exibir indicadores trimestrais (ex: PIB) ---
 def display_quarterly_indicator(indicator_name: str, api_endpoint: str, tab_container):
