@@ -49,33 +49,27 @@ def detect_trend(data, window=5):
 def format_value_with_unit(value, indicator_name):
     """
     Formata um valor com a unidade de medida correta do indicador.
-    
-    Args:
-        value: Valor numérico a formatar
-        indicator_name: Nome do indicador
-        
-    Returns:
-        String formatada com unidade de medida
     """
     indicator = indicator_name.upper()
     
     if indicator == "SELIC":
-        # SELIC é fornecida como decimal (ex: 0.03 para 3%), então multiplicar por 100
         return f"{value * 100:.2f}%"
     elif indicator == "IPCA":
-        # IPCA mensal costuma ser mostrado diretamente (ex: 0.4%)
         return f"{value:.2f}%"
     elif indicator == "CÂMBIO":
-        # Câmbio é em reais
         return f"R$ {value:.2f}"
     elif indicator == "PIB":
-        # PIB geralmente é em bilhões ou trilhões
+        if value >= 1000:
+            return f"R$ {value/1000:.2f} tri"
+        else:
+            return f"R$ {value:.2f} bi"
+    elif indicator == "DIVIDA" or indicator == "DÍVIDA PÚBLICA":
+        # Dívida pública geralmente é em bilhões
         if value >= 1000:
             return f"R$ {value/1000:.2f} tri"
         else:
             return f"R$ {value:.2f} bi"
     else:
-        # Formato padrão para outros indicadores
         return f"{value:.2f}"
 
 
@@ -230,6 +224,33 @@ def generate_market_insights(df, indicator_name):
             else:
                 insights.append("A estabilidade cambial oferece maior previsibilidade para o mercado e facilita o planejamento tanto de importadores quanto de exportadores.")
         
+        # Dívida Pública
+        elif indicator_name.upper() == "DIVIDA" or indicator_name.upper() == "DÍVIDA PÚBLICA":
+            # Formatar valores
+            latest_value_formatted = format_value_with_unit(latest_value, "DIVIDA")
+            mean_value_formatted = format_value_with_unit(mean_value, "DIVIDA")
+            
+            # Determinar tendência
+            trend = "alta" if recent_trend > 0 else "estável" if abs(recent_trend) < 0.01 else "queda"
+            
+            # Tendência em relação ao PIB (análise fictional)
+            insights = [
+                f"A dívida pública está em {trend}, com valor atual de {latest_value_formatted}.",
+                f"O valor atual está {'acima' if diff_percent > 0 else 'abaixo' if diff_percent < 0 else 'em linha com'} da média histórica ({mean_value_formatted}) em {abs(diff_percent):.2f}%."
+            ]
+            
+            # Análise contextual
+            if trend == "alta" and diff_percent > 5:
+                insights.append("O crescimento da dívida pública acima da média histórica pode indicar aumento nos custos de financiamento do governo e possível pressão fiscal.")
+            elif trend == "queda" and diff_percent < -5:
+                insights.append("A redução da dívida pública abaixo da média histórica pode indicar melhor equilíbrio fiscal e potencial redução nos custos de financiamento do governo.")
+            else:
+                insights.append("A estabilidade na dívida pública sugere manutenção do atual cenário fiscal.")
+
+
+
+
+
         # Caso não seja nenhum dos indicadores conhecidos
         else:
             insights = [
@@ -306,9 +327,14 @@ def generate_forecast_analysis(forecast_df, indicator_name):
                 "alta": f"**Previsão de crescimento do PIB:**\n\nO modelo prevê que o PIB deve {direction} nos próximos períodos, atingindo aproximadamente {end_value_formatted}. Esta tendência indica uma economia em expansão, possivelmente com aumento de investimentos e consumo.",
                 "queda": f"**Previsão de retração do PIB:**\n\nO modelo prevê que o PIB tende a {direction} nos próximos períodos, podendo chegar a {end_value_formatted}. Esta tendência pode indicar um cenário econômico mais desafiador à frente.",
                 "estabilidade": f"**Previsão de PIB estável:**\n\nO modelo prevê que o PIB deve {direction} nos próximos períodos, oscilando próximo a {end_value_formatted}. Esta estabilidade sugere manutenção do atual ritmo econômico."
+            },
+            "DIVIDA": {
+                "alta": f"**Previsão indica crescimento da dívida pública:**\n\nO modelo prevê que a dívida pública deve {direction} nos próximos períodos, atingindo aproximadamente {end_value_formatted}. Este cenário pode indicar aumento nas necessidades de financiamento do governo.",
+                "queda": f"**Previsão indica redução da dívida pública:**\n\nO modelo prevê que a dívida pública tende a {direction} nos próximos períodos, podendo chegar a {end_value_formatted}. Esta tendência pode sinalizar uma política fiscal mais restritiva ou aumento de arrecadação.",
+                "estabilidade": f"**Previsão de dívida pública estável:**\n\nO modelo prevê que a dívida pública deve {direction} nos próximos períodos, oscilando próximo a {end_value_formatted}. Esta estabilidade sugere manutenção do atual cenário fiscal."
             }
         }
-        
+
         # Selecionar análise correta baseada no indicador e tendência
         if indicator_name.upper() in forecast_insights and trend in forecast_insights[indicator_name.upper()]:
             analysis = forecast_insights[indicator_name.upper()][trend]
