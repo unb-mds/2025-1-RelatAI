@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException, Query, APIRouter, Body
-from utils.dados import carregar_dados, atualizar_dados, filtrar_por_ano_mes
+from utils.dados import carregar_dados, atualizar_dados, filtrar_por_ano_mes, filtrar_pib_por_ano_trimestre
 from utils.alertas import *
 from ml.ml_models import predict_future_values  # Importar a função do novo local
 from typing import List, Dict, Any, Optional
@@ -10,7 +10,8 @@ router = APIRouter()
 dados = carregar_dados()
 
 if dados:
-    dados = atualizar_dados(dados["selic"], dados["cambio"], dados["ipca"])
+    # Atualização para incluir o PIB
+    dados = atualizar_dados(dados["selic"], dados["cambio"], dados["ipca"], dados["pib"])
 else:
     raise RuntimeError("Não foi possível carregar os dados iniciais.")
 
@@ -32,13 +33,37 @@ def get_cambio():
 def get_ipca():
     return dados["ipca"].to_dict(orient="records")
 
+# Nova rota para o PIB
+@router.get("/pib")
+def get_pib():
+    return dados["pib"].to_dict(orient="records")
+
 @router.get("/filtro/{tipo}")
 def get_filtrado(tipo: str, ano: str = Query(...), mes: str = Query(...)):
-    if tipo not in ["selic", "cambio", "ipca"]:
-        raise HTTPException(status_code=400, detail="Tipo deve ser: selic, cambio ou ipca")
+    if tipo not in ["selic", "cambio", "ipca", "pib"]:
+        raise HTTPException(status_code=400, detail="Tipo deve ser: selic, cambio, ipca ou pib")
 
+    if tipo == "pib":
+        # PIB deve usar trimestre em vez de mês
+        raise HTTPException(status_code=400, detail="Para dados do PIB, use a rota /filtro-pib/{ano}/{trimestre}")
+    
     df = dados[tipo]
     filtrado = filtrar_por_ano_mes(df, ano, mes)
+    return filtrado.to_dict(orient="records")
+
+# Nova rota específica para filtrar PIB por trimestre
+@router.get("/filtro-pib/{ano}")
+def get_pib_filtrado(ano: str, trimestre: Optional[str] = Query(None)):
+    """
+    Filtra os dados do PIB por ano e trimestre.
+    Se o trimestre não for fornecido, retorna todos os trimestres do ano.
+    """
+    df = dados["pib"]
+    filtrado = filtrar_pib_por_ano_trimestre(df, ano, trimestre)
+    
+    if filtrado.empty:
+        raise HTTPException(status_code=404, detail=f"Dados não encontrados para o ano {ano} e trimestre {trimestre}")
+        
     return filtrado.to_dict(orient="records")
 
 @router.post("/predict/{indicator_name}")
@@ -46,7 +71,18 @@ async def predict_indicator(indicator_name: str, request: PredictionRequest):
     """
     Gera previsões para um indicador econômico
     """
+    # Validar se o indicator_name é válido
+    if indicator_name.lower() not in ["selic", "cambio", "ipca", "pib"]:
+        raise HTTPException(status_code=400, detail="Indicador deve ser: selic, cambio, ipca ou pib")
+    
     try:
+        # Verificar se há dados históricos suficientes
+        if len(request.historical_data) < request.window_size * 2:
+            raise HTTPException(
+                status_code=400, 
+                detail=f"Dados históricos insuficientes para análise de {indicator_name.upper()}. Necessários pelo menos {request.window_size * 2} pontos."
+            )
+            
         forecast_df = predict_future_values(
             request.historical_data,
             periods=request.periods,
@@ -67,6 +103,10 @@ async def predict_indicator(indicator_name: str, request: PredictionRequest):
 
 @router.get("/alertas")
 def rota_alertas():
-    dados = carregar_dados()
-    lista_de_alertas = gerar_alertas(dados)
+    # Carregar dados frescos para os alertas
+    dados_frescos = carregar_dados()
+    if not dados_frescos:
+        raise HTTPException(status_code=500, detail="Erro ao carregar dados para alertas")
+        
+    lista_de_alertas = gerar_alertas(dados_frescos)
     return {"alertas": lista_de_alertas}
