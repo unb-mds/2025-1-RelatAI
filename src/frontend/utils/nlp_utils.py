@@ -57,21 +57,24 @@ def format_value_with_unit(value, indicator_name):
     elif indicator == "IPCA":
         return f"{value:.2f}%"
     elif indicator == "CÂMBIO":
-        return f"R$ {value:.2f}"
+        return f"BRL {value:.2f}"
     elif indicator == "PIB":
-        if value >= 1000:
-            return f"R$ {value/1000:.2f} tri"
-        else:
-            return f"R$ {value:.2f} bi"
+        if value > 500:
+            return f" {value/1000:.2f} trilhões"
+        elif value > 10:
+            return f" {value:.2f} trilhões"
+        else:  # Valor em bilhões
+            return f"{value*1000:.2f} bilhões"
     elif indicator == "DIVIDA" or indicator == "DÍVIDA PÚBLICA":
-        # Dívida pública geralmente é em bilhões
-        if value >= 1000:
-            return f"R$ {value/1000:.2f} tri"
+        # Aplicar mesma correção para Dívida
+        if value > 500:  # Se for um valor absurdamente grande
+            return f"{value/100:.2f} trilhões"
+        elif value > 10:
+            return f"{value:.2f} trilhões"
         else:
-            return f"R$ {value:.2f} bi"
+            return f"{value*1000:.2f} bilhões"
     elif indicator == "DESEMPREGO":
         return f"{value:.2f}%"
-
     else:
         return f"{value:.2f}"
 
@@ -116,20 +119,28 @@ def generate_market_insights(df, indicator_name):
                 
                 # Comparar com mesmo trimestre do ano anterior se disponível
                 last_year_same_quarter = df_sorted[(df_sorted['ano'] == str(int(current_year) - 1)) & 
-                                                  (df_sorted['trimestre'] == current_quarter)]
+                                                (df_sorted['trimestre'] == current_quarter)]
                 
                 if not last_year_same_quarter.empty:
                     last_year_value = last_year_same_quarter['valor'].iloc[0]
                     yoy_change = ((latest_value - last_year_value) / last_year_value) * 100
                     insights.append(f"Comparado ao mesmo trimestre do ano anterior, o PIB apresenta {'crescimento' if yoy_change > 0 else 'retração'} de {abs(yoy_change):.2f}%.")
                 
-                # Comparação com a média histórica - com formatação de valores
-                latest_value_formatted = format_value_with_unit(latest_value, "PIB")
-                mean_value_formatted = format_value_with_unit(mean_value, "PIB")
+                # CORREÇÃO ESPECIAL PARA O PIB - Aplicar ajuste de escala antes da formatação
+                pib_latest = latest_value
+                pib_mean = mean_value
+                if latest_value > 100:
+                    pib_latest = latest_value / 100
+                    pib_mean = mean_value / 100
+                    
+                # Usar valores corrigidos para formatação
+                latest_value_formatted = format_value_with_unit(pib_latest, "PIB")
+                mean_value_formatted = format_value_with_unit(pib_mean, "PIB")
                 
                 if abs(diff_percent) < 0.5:
                     insights.append(f"O valor atual ({latest_value_formatted}) está em linha com a média histórica ({mean_value_formatted}).")
                 else:
+                    
                     insights.append(f"O valor atual ({latest_value_formatted}) está {'acima' if diff_percent > 0 else 'abaixo'} da média histórica ({mean_value_formatted}) em {abs(diff_percent):.2f}%.")
                 
                 # Adicionar comentário sobre a saúde econômica
@@ -149,7 +160,7 @@ def generate_market_insights(df, indicator_name):
                 mean_value_formatted = format_value_with_unit(mean_value, "PIB")
                 insights = [
                     f"Análise de tendência para PIB: {'crescimento' if recent_trend > 0 else 'estável' if -0.1 < recent_trend < 0.1 else 'retração'}.",
-                    f"O valor atual ({latest_value_formatted}) está {'acima' if diff_percent > 0 else 'abaixo' if diff_percent < 0 else 'em linha com'} da média histórica ({mean_value_formatted})."
+                    f"O valor atual ( {latest_value_formatted} ) está {'acima' if diff_percent > 0 else 'abaixo' if diff_percent < 0 else 'em linha com'} da média histórica ({mean_value_formatted})."
                 ]
         
         # SELIC
@@ -335,6 +346,12 @@ def generate_forecast_analysis(forecast_df, indicator_name):
         else:
             trend = "estabilidade"
             direction = "se manter estável"
+        
+        # CORREÇÃO ESPECIAL PARA O PIB - Aplicar ajuste de escala antes da formatação
+        if indicator_name.upper() == "PIB" and end_value > 100:
+            end_value = end_value / 100
+            max_value = max_value / 100
+            min_value = min_value / 100
             
         # Formatar valores com unidades corretas
         end_value_formatted = format_value_with_unit(end_value, indicator_name)

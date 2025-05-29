@@ -56,7 +56,7 @@ def format_indicator_value(value, indicator_name):
     elif indicator == "PIB":
         # PIB geralmente é em bilhões ou trilhões
         if value >= 1000:
-            return f"R$ {value/1000:.2f} tri"
+            return f"R$ {value/100000:.2f} tri"
         else:
             return f"R$ {value:.2f} bi"
         
