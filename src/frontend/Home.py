@@ -99,16 +99,20 @@ def fetch_and_add_general_alerts_to_notifications():
 
 # --- Configuração Principal da Página ---
 st.set_page_config(
-    page_title="Instituto de Pesquisa e Estatística Aplicada",
+    page_title="RelatAI | IPEA",
     page_icon="🏛️",
     layout="wide",
     initial_sidebar_state="auto"
 )
 
-# --- Cabeçalho Personalizado: Apenas Botão de Notificações ---
-col_title_spacer, col_notifications_btn = st.columns([0.85, 0.15])
+# --- Cabeçalho Personalizado: Título da App e Botão de Notificações ---
+col_app_title, col_notifications_btn_spacer, col_notifications_btn_actual = st.columns([0.75, 0.1, 0.15]) # Ajuste as proporções conforme necessário
 
-with col_notifications_btn:
+with col_app_title:
+    app_title_html = "<h1 style='color: #004080; margin-bottom:0px; font-weight:bold;'>RelatAI <span style='font-weight:normal; color: #0059b3'>| IPEA</span></h1>"
+    st.markdown(app_title_html, unsafe_allow_html=True)
+
+with col_notifications_btn_actual: # Renomeado de col_notifications_btn para evitar conflito se a var antiga ainda existir
     unread_count = count_unread_notifications()
     notif_icon_char = "🔔"
     
@@ -116,8 +120,11 @@ with col_notifications_btn:
     if unread_count > 0:
         button_label = f"{notif_icon_char} Alertas ({unread_count})"
 
-    with st.popover(button_label, use_container_width=False, help="Clique para ver os alertas"):
+    with st.popover(button_label, use_container_width=True, help="Clique para ver os alertas"): # use_container_width=True para preencher a coluna
         st.subheader("Notificações")
+        # Removido o botão "Atualizar Alertas e Previsões" daqui
+        st.divider()
+
         if not st.session_state.notifications:
             st.info("Nenhum alerta no momento.")
         else:
@@ -156,9 +163,13 @@ with col_notifications_btn:
             
             st.divider()
             if any(n['read'] for n in st.session_state.notifications):
-                if st.button("Limpar alertas lidos", use_container_width=True, key="clear_read_notifications_home"):
+                if st.button("Limpar alertas lidos", use_container_width=True, key="clear_read_notifications_home_main_btn"):
                     st.session_state.notifications = [n for n in st.session_state.notifications if not n['read']]
                     st.rerun()
+
+# Linha divisória após o cabeçalho personalizado
+st.markdown("---")
+
 
 # --- Conteúdo Original da Página Home (abaixo do cabeçalho) ---
 st.title("Instituto de Pesquisa e Estatística Aplicada")
@@ -186,8 +197,71 @@ st.markdown(
 
 st.sidebar.info("Selecione uma página na barra lateral.")
 
-st.markdown("---")
-st.caption("© 2025 Instituto de Pesquisa e Estatística Aplicada. Todos os direitos reservados.")
+
+
+# Conteúdo principal da página inicial
+# Adiciona as três seções principais: Macroeconômico, Regional e Social
+st.markdown("---")  # Linha divisória
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    st.markdown("""
+    <div style="background-color: #e7f0f7; padding: 20px; border-radius: 10px; height: 100%;">
+        <h3 style="color: #004080; font-weight: bold;">Macroeconômico</h3>
+        <p style="color: #004080;">Dados econômicos e financeiros do Brasil em séries anuais, mensais e diárias na mesma unidade monetária.</p>
+    </div>
+    """, unsafe_allow_html=True)
+    # Adicionar links ou botões para navegação futura, se necessário
+    # st.page_link("pages/macro_data.py", label="Acessar Dados Macroeconômicos")
+
+with col2:
+    st.markdown("""
+    <div style="background-color: #e7f7e7; padding: 20px; border-radius: 10px; height: 100%;">
+        <h3 style="color: #006400; font-weight: bold;">Regional</h3>
+        <p style="color: #006400;">Dados econômicos, demográficos e geográficos para estados, municípios (e suas áreas mínimas comparáveis), regiões administrativas e bacias hidrográficas brasileiras.</p>
+    </div>
+    """, unsafe_allow_html=True)
+    # st.page_link("pages/regional_data.py", label="Acessar Dados Regionais")
+
+with col3:
+    st.markdown("""
+    <div style="background-color: #f7e7e7; padding: 20px; border-radius: 10px; height: 100%;">
+        <h3 style="color: #c00000; font-weight: bold;">Social</h3>
+        <p style="color: #c00000;">Dados e indicadores sobre distribuição de renda, pobreza, educação, saúde, assistência social. Desagregações de gênero, cor e outras, acesse os links no comentário.</p>
+    </div>
+    """, unsafe_allow_html=True)
+    # st.page_link("pages/social_data.py", label="Acessar Dados Sociais")
+
+st.markdown("---") # Linha divisória
+st.markdown("""
+Os dados disponibilizados no Ipeadata são de uso público. É permitida sua reprodução e utilização em tabelas, gráficos, mapas e textos, desde que o Ipeadata seja citado.
+
+Para consulta aos dados do Ipeadata, use a <a href="http://www.ipeadata.gov.br/api" target="_blank">API Ipeadata</a>, as bibliotecas em <a href="https://cran.r-project.org/package=ipeadatar" target="_blank">R (ipeadatar)</a>, <a href="https://pypi.org/project/ipeadatapy/" target="_blank">Python (ipeadatapy)</a> ou <a href="http://ipeadata.gov.br/doc/api_IPEA_v1_15_5.xlsm" target="_blank">Excel (versão 1.15.5)</a>.
+""", unsafe_allow_html=True)
+st.markdown("### Séries mais acessadas")
+# Placeholder para as séries mais acessadas - pode ser preenchido dinamicamente no futuro
+col1_series, col2_series, col3_series = st.columns(3)
+with col1_series:
+    st.markdown("**Ipeadata Macro:**")
+    st.markdown("- Taxa de juros - CDI/Over")
+    st.markdown("- IPCA")
+    st.markdown("- IGP-M")
+    st.markdown("- INPC - geral - índice")
+    st.markdown("- Taxa de câmbio - R$/US&#36;") # Using HTML entity for dollar sign
+with col2_series:
+    st.markdown("**Ipeadata Regional:**")
+    st.markdown("- População")
+    st.markdown("- PIB Estadual")
+    st.markdown("- Empregados - admissões")
+    st.markdown("- Empregados - demissões")
+    st.markdown("- Exportações (FOB)")
+with col3_series:
+    st.markdown("**Ipeadata Social:**")
+    st.markdown("- Índice de Gini")
+    st.markdown("- IDHM")
+    st.markdown("- Taxa de desemprego (desocupação)")
+    st.markdown("- Taxa de pobreza nacional")
+    st.markdown("- Bolsa Família - valores mensais")
 
 if __name__ == '__main__':
     pass

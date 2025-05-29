@@ -195,7 +195,7 @@ def atualizar_dados(df_selic, df_cambio, df_ipca, df_pib, df_divida, df_desempre
         return {"selic": df_selic, "cambio": df_cambio, "ipca": df_ipca, "pib": df_pib, "divida": df_divida, "desemprego": df_desemprego}
 
 
-# Função de filtro por ano e mês
+# Filtrar DataFrame por ano e mês
 def filtrar_por_ano_mes(df, ano: str, mes: str):
     return df[(df['ano'] == ano) & (df['mes'].str.lower() == mes.lower())]
 
