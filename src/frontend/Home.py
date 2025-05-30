@@ -1,6 +1,8 @@
 import streamlit as st
 import requests
 import json
+import base64  # Added import
+from pathlib import Path  # Added import
 
 # --- Inicializar estado da sessão para notificações ---
 if 'notifications' not in st.session_state:
@@ -202,13 +204,32 @@ st.sidebar.info("Selecione uma página na barra lateral.")
 # Conteúdo principal da página inicial
 # Adiciona as três seções principais: Macroeconômico, Regional e Social
 st.markdown("---")  # Linha divisória
-col1, col2, col3 = st.columns(3)
+col1, col2, col3 = st.columns([2, 1, 1]) # Alterado para destacar a primeira coluna
 
 with col1:
-    st.markdown("""
-    <div style="background-color: #e7f0f7; padding: 20px; border-radius: 10px; height: 100%;">
-        <h3 style="color: #004080; font-weight: bold;">Macroeconômico</h3>
-        <p style="color: #004080;">Dados econômicos e financeiros do Brasil em séries anuais, mensais e diárias na mesma unidade monetária.</p>
+    img_src = ""  # Default to empty string
+    try:
+        # Construct the absolute path to the image relative to Home.py
+        image_path = Path(__file__).parent / "assets" / "macro_icon.png"
+        if image_path.is_file():
+            with open(image_path, "rb") as img_file:
+                img_bytes = img_file.read()
+            img_base64 = base64.b64encode(img_bytes).decode()
+            img_src = f"data:image/png;base64,{img_base64}"
+        else:
+            st.error(f"Image file not found at {image_path}")
+    except Exception as e:
+        st.error(f"Error loading image: {e}")
+
+    st.markdown(f"""
+    <div style="background-color: #e7f0f7; border-radius: 10px; height: 100%; display: flex; flex-direction: column; overflow: hidden;">
+        <div style="background-color: #adcbe3; padding: 10px; text-align: center;">
+            <h3 style="color: #000; font-weight: bold; margin: 0; font-size: 1.8em;">Macroeconômico</h3>
+        </div>
+        <div style="padding: 15px; text-align: center; flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+            <img src="{img_src}" alt="Ícone Macroeconômico" style="width:80px; height:80px; margin-bottom:15px;">
+            <p style="color: #004080; font-size: 1.1em; line-height: 1.5;">Dados econômicos e financeiros do Brasil em séries anuais, mensais e diárias na mesma unidade monetária.</p>
+        </div>
     </div>
     """, unsafe_allow_html=True)
     # Adicionar links ou botões para navegação futura, se necessário
