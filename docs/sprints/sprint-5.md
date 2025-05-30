@@ -1,6 +1,6 @@
 # Sprint 5
 
-**Período:** 15/05/2025 a 26/05/2025
+**Período:** 14/05/2025 a 16/05/2025
 
 ## Descrição
 
@@ -17,7 +17,7 @@
 
 ### Reunião 1
 
-**Data:** 15/05/2025
+**Data:** 14/05/2025
 **Local:** UnB
 
 **Decisões tomadas:**
