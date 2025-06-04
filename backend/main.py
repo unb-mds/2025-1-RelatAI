@@ -1,5 +1,6 @@
 from fastapi import FastAPI
-from routes import router as api_router
+from .routes import router as api_router
+
 
 app = FastAPI(title="Minha API")
 
