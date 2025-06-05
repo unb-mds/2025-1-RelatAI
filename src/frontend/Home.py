@@ -234,9 +234,9 @@ with col1:
         st.error(f"Error loading image: {e}")
 
     st.markdown(f"""
-    <div style="background-color: #e7f0f7; border-radius: 10px; height: 100%; display: flex; flex-direction: column; overflow: hidden;">
-        <div style="background-color: #adcbe3; padding: 10px; text-align: center;">
-            <h3 style="color: #000; font-weight: bold; margin: 0; font-size: 1.8em;">Macroeconômico</h3>
+    <div style="background-color: #e7f0f7; border-radius: 10px; height: 100%; display: flex; flex-direction: column; overflow: hidden; border: 2px solid #004080;">
+        <div style="background-color: #004080; padding: 10px; text-align: center;">
+            <h3 style="color: #FFFFFF; font-weight: bold; margin: 0; font-size: 1.8em;">Macroeconômico</h3>
         </div>
         <div style="padding: 15px; text-align: center; flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;">
             <img src="{img_src}" alt="Ícone Macroeconômico" style="width:80px; height:80px; margin-bottom:15px;">
