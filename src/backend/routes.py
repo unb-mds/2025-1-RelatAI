@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException, Query, APIRouter, Body
-from .utils.dados import carregar_dados, atualizar_dados, filtrar_por_ano_mes, filtrar_pib_por_ano_trimestre
-from .utils.alertas import *
-from frontend.utils.ml_models import predict_future_values # Importar a função do novo local
+from utils.dados import carregar_dados, atualizar_dados, filtrar_por_ano_mes, filtrar_pib_por_ano_trimestre
+from utils.alertas import *
+from ml.ml_models import predict_future_values  # Importar a função do novo local
 from typing import List, Dict, Any, Optional
 from pydantic import BaseModel
 
