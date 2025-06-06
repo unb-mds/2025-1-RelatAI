@@ -11,7 +11,7 @@ dados = carregar_dados()
 
 if dados:
     # Atualização para incluir o PIB
-    dados = atualizar_dados(dados["selic"], dados["cambio"], dados["ipca"], dados["pib"], dados["divida"], dados["desemprego"])
+    dados = atualizar_dados(dados)
 else:
     raise RuntimeError("Não foi possível carregar os dados iniciais.")
 

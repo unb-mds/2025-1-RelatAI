@@ -19,6 +19,18 @@ MAPA_MESES = {
     'September': 'Setembro', 'October': 'Outubro', 'November': 'Novembro', 'December': 'Dezembro'
 }
 
+import pandas as pd
+
+def converter_data_safe(df, coluna="data"):
+    try:
+        # Deixe o pandas inferir automaticamente o formato
+        df[coluna] = pd.to_datetime(df[coluna], errors='coerce', utc=False)
+        return df
+    except Exception as e:
+        print(f"Erro ao converter datas: {e}")
+        return df
+
+
 def carregar_dados():
     dados = {}
     hoje = pd.Timestamp.today()
@@ -46,7 +58,14 @@ def carregar_dados():
                     response = requests.get(url)
                     if response.status_code == 200:
                         df = pd.read_csv(StringIO(response.text), sep=';', decimal='.')
-                        df['data'] = pd.to_datetime(df['data'], format="%d/%m/%Y")
+
+                        # Conversão robusta de datas
+                        df = converter_data_safe(df, coluna='data')
+
+                        
+                        # Remove linhas com datas inválidas
+                        df = df.dropna(subset=['data'])
+                        
                         if df['valor'].dtype == object:
                             df['valor'] = df['valor'].str.replace(',', '.', regex=False).astype(float)
                         df['mes'] = df['data'].dt.month_name().map(MAPA_MESES)
@@ -59,7 +78,14 @@ def carregar_dados():
                 response = requests.get(url_base)
                 if response.status_code == 200:
                     df = pd.read_csv(StringIO(response.text), sep=';', decimal='.')
-                    df['data'] = pd.to_datetime(df['data'], format="%d/%m/%Y")
+                    
+                    # Conversão robusta de datas
+                    df = converter_data_safe(df, coluna='data')
+
+                    
+                    # Remove linhas com datas inválidas
+                    df = df.dropna(subset=['data'])
+                    
                     if df['valor'].dtype == object:
                         df['valor'] = df['valor'].str.replace(',', '.', regex=False).astype(float)
                     df['mes'] = df['data'].dt.month_name().map(MAPA_MESES)
@@ -73,6 +99,7 @@ def carregar_dados():
             print(f"Erro ao carregar dados de {nome}: {e}")
     return dados
 
+
 def atualizar_dados(dados_existentes):
     novos_dados = {}
     atualizaveis = ['selic', 'cambio']
@@ -85,17 +112,30 @@ def atualizar_dados(dados_existentes):
         try:
             df_existente = dados_existentes[nome]
             ultima_data = df_existente['data'].max()
-            data_inicial = (ultima_data + timedelta(days=1)).strftime("%d/%m/%Y")
-            data_final = pd.Timestamp.today().strftime("%d/%m/%Y")
 
-            url_base = URLS[nome]
-            url = f"{url_base}&dataInicial={data_inicial}&dataFinal={data_final}"
+            data_inicial_dt = ultima_data
+            data_final_dt = pd.Timestamp.today() - timedelta(days=1)
+
+            # Impede chamada inválida à API
+            if data_inicial_dt >= data_final_dt:
+                novos_dados[nome] = df_existente
+                continue
+
+            data_inicial = data_inicial_dt.strftime("%d/%m/%Y")
+            data_final = data_final_dt.strftime("%d/%m/%Y")
+            url = f"{URLS[nome]}&dataInicial={data_inicial}&dataFinal={data_final}"
 
             response = requests.get(url)
             if response.status_code == 200:
                 df_novo = pd.read_csv(StringIO(response.text), sep=";", decimal=".")
                 if not df_novo.empty:
-                    df_novo['data'] = pd.to_datetime(df_novo['data'], format="%d/%m/%Y")
+                    # Conversão robusta de datas
+                    df = converter_data_safe(df, coluna='data')
+
+                    
+                    # Remove linhas com datas inválidas
+                    df_novo = df_novo.dropna(subset=['data'])
+                    
                     if df_novo['valor'].dtype == object:
                         df_novo['valor'] = df_novo['valor'].str.replace(',', '.', regex=False).astype(float)
                     df_novo['mes'] = df_novo['data'].dt.month_name().map(MAPA_MESES)
@@ -114,6 +154,7 @@ def atualizar_dados(dados_existentes):
             novos_dados[nome] = dados_existentes[nome]
 
     return novos_dados
+
 
 def filtrar_por_ano_mes(df, ano: str, mes: str):
     return df[(df['ano'] == ano) & (df['mes'].str.lower() == mes.lower())]
@@ -134,17 +175,6 @@ def media_anual(df, ano):
     return round(df_ano['valor'].mean(), 2)
 
 def filtrar_pib_por_ano_trimestre(df_pib, ano: str, trimestre: str = None):
-    """
-    Filtra os dados do PIB por ano e, opcionalmente, por trimestre
-    
-    Args:
-        df_pib: DataFrame com dados do PIB
-        ano: Ano desejado como string (ex: "2023")
-        trimestre: Trimestre desejado como string (ex: "1", "2", "3", "4") ou None para todos
-        
-    Returns:
-        DataFrame filtrado
-    """
     if trimestre is None:
         return df_pib[df_pib['ano'] == ano]
     else:
