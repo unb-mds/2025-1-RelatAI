@@ -47,7 +47,7 @@ Ao final, será entregue uma plataforma intuitiva e informativa que facilite a t
 
 ## Sobre
 
-Para mais detalhes, visite a [página do projeto](https://unb-mds.github.io/2025-1-squad09/).
+Para mais detalhes, visite a [página do projeto](https://unb-mds.github.io/2025-1-RelatAI/).
 
 ---
 
