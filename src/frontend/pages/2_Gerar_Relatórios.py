@@ -182,8 +182,8 @@ def format_indicator_value(value, indicator_name):
     elif indicator == "CÂMBIO (USD)":
         return f"R$ {value:.2f}"
     elif indicator == "PIB":
-        # Converter valores em bilhões para trilhões
-        valor_trilhoes = value / 1000
+        # Converter para trilhões considerando que o valor está em milhões de bilhões
+        valor_trilhoes = value / 1000000
         return f"R$ {valor_trilhoes:.2f} tri"
     elif indicator == "DÍVIDA PÚBLICA":
         if value >= 1000:
@@ -399,9 +399,20 @@ if st.button("Gerar Relatório Detalhado"):
                 if incluir_graficos:
                     st.subheader("📊 Análise Gráfica")
                     
+                    # Para PIB, criarmos uma cópia do DataFrame com valores em trilhões
+                    df_plot = df.copy()
+                    if tipo_dado == "PIB":
+                        # Dividir valores por 1 milhão para converter para trilhões
+                        # Considerando que os valores originais estão na casa dos milhões de bilhões
+                        df_plot['valor'] = df_plot['valor'] / 1000000
+                        
+                        # Log para debug
+                        st.write(f"Valor médio original: {df['valor'].mean()}")
+                        st.write(f"Valor médio ajustado: {df_plot['valor'].mean()}")
+                    
                     # Gráfico histórico
                     fig = px.line(
-                        df, 
+                        df_plot, 
                         x='data', 
                         y='valor',
                         title=f"Histórico - {tipo_dado}",
@@ -420,7 +431,18 @@ if st.button("Gerar Relatório Detalhado"):
                             yaxis_title="Valor (R$)",
                             yaxis_tickprefix="R$ "
                         )
-                    elif tipo_dado in ["PIB", "Dívida Pública"]:
+                    elif tipo_dado == "PIB":
+                        # Valores máximos e mínimos para definir uma escala clara
+                        y_min = df_plot['valor'].min() * 0.9  # 10% abaixo do mínimo
+                        y_max = df_plot['valor'].max() * 1.1  # 10% acima do máximo
+                        
+                        fig.update_layout(
+                            yaxis_title="Valor (R$ tri)",
+                            yaxis=dict(
+                                range=[y_min, y_max]
+                            )
+                        )
+                    elif tipo_dado == "Dívida Pública":
                         fig.update_layout(
                             yaxis_title="Valor (R$ bi)"
                         )
