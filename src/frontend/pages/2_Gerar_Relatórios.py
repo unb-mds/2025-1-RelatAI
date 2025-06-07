@@ -182,10 +182,9 @@ def format_indicator_value(value, indicator_name):
     elif indicator == "CÂMBIO (USD)":
         return f"R$ {value:.2f}"
     elif indicator == "PIB":
-        if value >= 1000:
-            return f"R$ {value/1000:.2f} tri"
-        else:
-            return f"R$ {value:.2f} bi"
+        # Converter valores em bilhões para trilhões
+        valor_trilhoes = value / 1000
+        return f"R$ {valor_trilhoes:.2f} tri"
     elif indicator == "DÍVIDA PÚBLICA":
         if value >= 1000:
             return f"R$ {value/1000:.2f} tri"
