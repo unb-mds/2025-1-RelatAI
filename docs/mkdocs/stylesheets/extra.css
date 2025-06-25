@@ -1,11 +1,7 @@
 /* ----- Paleta base ----- */
 :root {
-  --relat-red:  #0d197e; /* vermelho */
-  --relat-blue: #5b7fe2; /* azul    */
-
-    /* Novas variáveis para temas */
-  --nav-text-light: #04224e;       /* Azul marinho (modo claro) */
-  --nav-text-dark:  #ffffff;       /* Azul claro (modo escuro) */
+  --relat-red:  #c62828; /* vermelho */
+  --relat-blue: #1565c0; /* azul    */
 }
 
 /* fundo do topo + shadow discreta */
@@ -72,25 +68,21 @@ pre[class*="language-"] {
 }
 
 /* ---------- Cor padrão (modo claro) ---------- */
-/* ------ Links do menu (adaptativo) ------ */
 .md-nav__link,
 .md-tabs__link {
-  /* Cor padrão para modo claro */
-  color: var(--nav-text-light);
+  color: #0d47a1;                 /* azul‑marinho */
 }
 
-/* Modo escuro (automático) */
-[data-md-color-scheme="slate"] .md-nav__link,
-[data-md-color-scheme="slate"] .md-tabs__link {
-  color: var(--nav-text-dark);
-}
-
-/* Estados de hover e ativo (funcionam em ambos temas) */
-.md-nav__link:hover,
-.md-tabs__link:hover,
+/* página atual */
 .md-nav__link--active,
 .md-tabs__link--active {
-  color: var(--relat-red) !important;
+  color: var(--relat-red);        /* segue vermelho de destaque */
   border-bottom: 2px solid var(--relat-red);
+}
+
+/* hover */
+.md-nav__link:hover,
+.md-tabs__link:hover {
+  color: var(--relat-red);
 }
 

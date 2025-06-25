@@ -5,7 +5,3 @@ scikit-learn
 plotly
 streamlit
 requests
-numpy
-matplotlib
-torch
-fpdf
