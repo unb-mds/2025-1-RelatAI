@@ -24,7 +24,7 @@ def get_next_notification_id():
     return st.session_state.last_notification_id
 
 # --- Funções para buscar dados da API ---
-API_BASE_URL = "http://127.0.0.1:8000"
+API_BASE_URL = "http://backend:8000"
 
 def fetch_api_data(endpoint: str):
     """Busca dados de um endpoint da API e retorna o JSON, ou None em caso de erro."""
