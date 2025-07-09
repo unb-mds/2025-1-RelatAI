@@ -31,4 +31,8 @@ def test_predict_future_values_basic():
 
     forecast_df = predict_future_values(df, periods=periods, window_size=15, model_type="deepseek")
 
+<<<<<<< HEAD
     assert forecast_df is None
+=======
+    assert forecast_df is None
+>>>>>>> 2085b3fe7e8806bfe7c84ab71eeafd89488d5c2c
