@@ -5,6 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.backend
+    container_name: backend
     ports:
       - "8000:8000"
     volumes:
@@ -15,7 +16,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.frontend
-    container_name: streamlit_app
+    container_name: frontend
     ports:
       - "8501:8501"
     volumes:

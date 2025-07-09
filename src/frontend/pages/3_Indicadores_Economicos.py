@@ -20,7 +20,7 @@ st.title("Análise de Indicadores Econômicos Chave")
 st.markdown("Acompanhe as tendências e previsões para SELIC, IPCA e Câmbio fornecidas pela nossa API.")
 
 # --- Função para buscar dados da API ---
-API_BASE_URL = "http://backend:8000"
+API_BASE_URL = "https://two025-1-relatai.onrender.com"
 
 def fetch_api_data(endpoint: str, params: dict = None):
     """Busca dados de um endpoint da API e retorna o JSON, ou None em caso de erro."""
