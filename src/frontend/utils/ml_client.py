@@ -8,7 +8,7 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-API_BASE_URL = "http://backend:8000"  # Ajuste conforme seu ambiente
+API_BASE_URL = "https://two025-1-relatai.onrender.com"
 
 def predict_future_values(historical_data, periods=90, window_size=15, model_type="deepseek", indicator_name="selic"):
     try:
