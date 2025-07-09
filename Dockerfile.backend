@@ -1,17 +1,13 @@
+# Dockerfile.backend
+
 FROM python:3.10-slim
 
 WORKDIR /app
 
-COPY src/requirements.txt .
+COPY requirements.txt .
 
-RUN pip install --default-timeout=300 --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-COPY src/requirements.torch.txt .
-
-RUN pip install --default-timeout=300 --no-cache-dir -r requirements.ml.txt
-
-COPY src/backend/ /app
-
-EXPOSE 8000
+COPY ./src/backend /app
 
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
