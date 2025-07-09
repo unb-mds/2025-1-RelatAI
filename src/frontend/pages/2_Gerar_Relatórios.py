@@ -17,7 +17,7 @@ import requests
 st.set_page_config(page_title="Geração de Relatórios - IPEA", page_icon="📊", layout="wide")
 
 # Constantes
-API_BASE_URL = "http://127.0.0.1:8000"
+API_BASE_URL = "http://backend:8000"
 TIPOS_DADOS = {
     "IPCA": "ipca",
     "Taxa SELIC": "selic",

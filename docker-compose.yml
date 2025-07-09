@@ -1,0 +1,26 @@
+version: '3.9'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: fastapi_app
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./src/backend:/app
+    restart: always
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: streamlit_app
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./src/frontend:/app
+    depends_on:
+      - backend
+    restart: always
