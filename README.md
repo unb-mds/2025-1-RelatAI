@@ -1,94 +1,143 @@
-# RelatAI IPEA
 
-RelatAI IPEA é uma plataforma que automatiza a geração de relatórios financeiros a partir de dados do IPEA (Instituto de Pesquisa Econômica Aplicada). A solução integra backend, frontend, análise de dados e NLP para oferecer insights claros e atualizados.
 
----
+# 🧠 RelatAI – Relatórios Financeiros Automatizados
 
-## Integrantes
+RelatAI é um sistema que integra **coleta, análise e geração de relatórios financeiros** com linguagem natural, utilizando **FastAPI** para o backend e **Streamlit** para a interface frontend.
 
-- Ana Luiza Borba de Abrantes
-- Arthur Henrique Vieira
-- João Vitor Sales Ibiapina
-- Kauã Vale Leão
-- Pedro Rocha Ferreira Lima
-- Saied Muhamad Yacoub Falaneh
+> 🚀 Transformamos dados públicos do IPEA e BACEN em **relatórios automatizados, acessíveis e compreensíveis para todos**.
 
 ---
 
-## Objetivo
+## 📦 Como Executar o Projeto
 
-Fornecer relatórios automatizados com visualização interativa e resumos gerados por NLP, facilitando a interpretação de séries históricas e indicadores financeiros do IPEA.
+### 🛠️ Pré-requisitos
 
----
-
-## Funcionalidades
-
-- Conexão com APIs do IPEA para coleta de séries históricas.
-- Pipeline ETL para limpeza e transformação de dados.
-- Cálculo de indicadores (variação percentual, médias móveis, etc.).
-- Geração de relatórios em PDF, HTML e Markdown.
-- Dashboard interativo com filtros e gráficos.
-- Resumos automáticos por NLP.
-- Exportação de dados para CSV e Excel.
+- Python 3.10+
+- pip
+- Docker (opcional)
+- Git
 
 ---
 
-## Tecnologias
-
-- **Backend**: Python (FastAPI), Pandas  
-- **Frontend**: Streamlit, JavaScript, HTML5, CSS3  
-- **NLP**: spaCy, NLTK  
-- **CI/CD**: GitHub Actions  
-- **Deploy**: Streamlit Cloud  
-- **Testes**: PyTest  
-
----
-
-## Instalação
+### ▶️ Rodando o Backend (FastAPI)
 
 ```bash
-# Clone o repositório e acesse a pasta
+# Clone o repositório
 git clone https://github.com/unb-mds/2025-1-RelatAI.git
-cd 2025-1-RelatAI
-
-# Crie e ative um ambiente virtual
-python -m venv venv
-source venv/bin/activate    # venv\Scripts\activate no Windows
+cd 2025-1-RelatAI/backend
 
 # Instale as dependências
 pip install -r requirements.txt
 
-# Execute o backend com autoreload
+# Execute a API
 uvicorn main:app --reload
-
-# Inicie o frontend
-streamlit run src/app.py
 ```
 
-## Planejamento
-
-1. **Reunião Inicial**  
-   - Levantamento de requisitos e definição de escopo.  
-   - Distribuição de funções entre os integrantes.
-
-2. **Sprints Semanais**  
-   - Atualização de progresso e dificuldades.  
-   - Entrega de partes funcionais (backend, frontend, IA, etc.).
-
-3. **Sprint Review & Retrospectiva**  
-   - Coleta de feedback e ajustes no planejamento.  
-   - Avaliação das entregas de código e performance do sistema.
+Acesse a documentação interativa da API:  
+📎 `http://localhost:8000/docs`
 
 ---
 
+### 💻 Rodando o Frontend (Streamlit)
 
-## Sobre
+```bash
+cd ../frontend
 
-Para mais detalhes, visite a [página do projeto](https://unb-mds.github.io/2025-1-RelatAI/).
+# Instale as dependências
+pip install -r requirements.txt
+
+# Rode o app
+streamlit run app.py
+```
+
+Acesse a interface gráfica:  
+📎 `http://localhost:8000`
 
 ---
 
-## Licença
+## 🏗️ Estrutura do Projeto
+
+```plaintext
+2025-1-RelatAI/
+├── backend/
+│   ├── main.py
+│   ├── routers/
+│   ├── services/
+│   ├── models/
+│   ├── utils/
+│   └── requirements.txt
+├── frontend/
+│   ├── app.py
+│   ├── pages/
+│   └── components/
+├── data/
+│   └── raw/ processed/
+├── notebooks/
+│   └── análise-nlp.ipynb
+├── docker-compose.yml
+└── README.md
+```
+
+---
+
+## 🧩 Arquitetura do Projeto
+
+- **Backend (FastAPI):** fornece rotas REST para buscar dados do BACEN/IPEA, aplicar modelos de NLP e entregar resumos financeiros.
+- **Frontend (Streamlit):** permite visualização interativa dos indicadores e relatórios gerados.
+- **NLP & Análise de Dados:** modelos baseados em `spaCy`, `scikit-learn` e `pandas` para gerar descrições automatizadas e insights.
+- **Banco de Dados:** PostgreSQL (pode ser local ou em nuvem).
+- **Docker:** ambiente completo para deploy e testes.
+
+---
+
+## 📑 Documentação da API
+
+### 🔹 `GET /selic`
+Retorna os dados da taxa Selic histórica.
+
+### 🔹 `GET /ipca`
+Retorna os dados da inflação (IPCA).
+
+### 🔹 `GET /cambio`
+Retorna os dados do dólar comercial.
+
+### 🔹 `POST /nlp/resumo`
+Gera um resumo textual baseado nos dados econômicos recebidos.
+
+**Exemplo de corpo da requisição:**
+```json
+{
+  "variavel": "selic",
+  "dados": [10.75, 10.75, 10.50, 10.25]
+}
+```
+
+---
+
+## ⚙️ Tecnologias Utilizadas
+
+| Camada         | Tecnologias                            |
+|----------------|----------------------------------------|
+| **Backend**    | FastAPI, Uvicorn                       |
+| **Frontend**   | Streamlit, Pandas                      |
+| **Análise/NLP**| Scikit-learn, spaCy, matplotlib        |
+| **DevOps**     | Docker, GitHub                         |
+
+
+---
+
+## 🤝 Como Contribuir
+
+1. Fork este repositório
+2. Crie uma branch com sua feature (`git checkout -b minha-feature`)
+3. Commit suas alterações (`git commit -m 'feat: minha contribuição'`)
+4. Faça push para a branch (`git push origin minha-feature`)
+5. Abra um Pull Request 🚀
+
+---
+
+## 📄 Licença
+
 
 Este projeto está licenciado sob a [MIT License](LICENSE).
 
