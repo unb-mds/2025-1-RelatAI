@@ -101,7 +101,16 @@ Retorna os dados da inflação (IPCA).
 ### 🔹 `GET /cambio`
 Retorna os dados do dólar comercial.
 
-### 🔹 `POST /nlp/resumo`
+### 🔹 `GET /pib`
+Retorna os dados do pib comercial.
+
+### 🔹 `GET /divida`
+Retorna os dados da divida comercial.
+
+### 🔹 `GET /alertas`
+Retorna os dados de alertas comerciais.
+
+### 🔹 `POST /predict/{predicator_name}`
 Gera um resumo textual baseado nos dados econômicos recebidos.
 
 **Exemplo de corpo da requisição:**
