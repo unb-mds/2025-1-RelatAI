@@ -387,7 +387,7 @@ def evaluate_model(model, X_test, y_test, is_deepseek=False):
 def save_model(model, scaler, indicator_name, model_dir=None, is_deepseek=False):
     """Salva o modelo treinado e scaler"""
     if model_dir is None:
-        model_dir = os.path.join(os.path.dirname(__file__), '..', '..', 'back', 'ipea', 'financeiro', 'ml', 'models')
+        model_dir = os.path.join(os.path.dirname(__file__), '..', 'data', 'models')
     
     os.makedirs(model_dir, exist_ok=True)
     
@@ -419,7 +419,7 @@ def save_model(model, scaler, indicator_name, model_dir=None, is_deepseek=False)
 def load_model(indicator_name, model_dir=None, model_type="deepseek"):
     """Carrega modelo e scaler"""
     if model_dir is None:
-        model_dir = os.path.join(os.path.dirname(__file__), '..', '..', 'back', 'ipea', 'financeiro', 'ml', 'models')
+        model_dir = os.path.join(os.path.dirname(__file__), '..', 'data', 'models')
     
     model_path = os.path.join(model_dir, f"{indicator_name}_model.pkl")
     scaler_path = os.path.join(model_dir, f"{indicator_name}_scaler.pkl")
