@@ -1,3 +1,9 @@
 /.vscode
 venv/
-__pycache__/
+__pycache__
+/src/backend/__pycache__
+/src/backend/.pytest_cache
+/src/backend/tests/.pytest_cache
+/src/backend/utils/__pycache__
+.streamlit
+__init__.py
