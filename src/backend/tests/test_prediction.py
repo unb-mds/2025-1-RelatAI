@@ -31,5 +31,4 @@ def test_predict_future_values_basic():
 
     forecast_df = predict_future_values(df, periods=periods, window_size=15, model_type="deepseek")
 
-    # Se a função retornar None, o teste apenas confirma esse comportamento atual.
     assert forecast_df is None
