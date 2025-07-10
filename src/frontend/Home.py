@@ -34,7 +34,7 @@ st.set_page_config(
 col_app_title, col_notifications_btn_spacer, col_notifications_btn_actual = st.columns([0.75, 0.1, 0.15])
 
 with col_app_title:
-    app_title_html = "<h1 style='color: #004080; margin-bottom:0px; font-weight:bold;'>RelatAI <span style='font-weight:normal; color: #0059b3'>| IPEA</span></h1>"
+    app_title_html = "<h1 style='color: #FDFDFD; margin-bottom:0px; font-weight:bold;'>RelatAI <span style='font-weight:normal; color: #0E6D19'>| IPEA</span></h1>"
     st.markdown(app_title_html, unsafe_allow_html=True)
 
 with col_notifications_btn_actual:
