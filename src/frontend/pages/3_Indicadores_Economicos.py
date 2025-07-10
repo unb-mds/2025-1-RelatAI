@@ -56,8 +56,6 @@ def predict_future_values(historical_data, periods=30, model_type="deepseek", in
         # Usar os últimos 30 pontos para calcular a tendência
         recent_df = df.tail(30)
         
-        # Calcular tendência linear simples
-        import numpy as np
         x = np.arange(len(recent_df))
         y = recent_df['valor'].values
         

@@ -68,11 +68,11 @@ with col_notifications_btn_actual:
                     
                     notif_container = st.container(border=True)
                     with notif_container:
-                        col_msg, col_action = st.columns([0.85, 0.15])
+                        col_msg, col_action = st.columns([0.8, 0.2])
                         with col_msg:
                             st.markdown(f"**{msg_icon} {notif['message']}**")
                         with col_action:
-                            if original_index != -1 and st.button("Lida", key=f"read_{notif['id']}", type="primary", use_container_width=True, help="Marcar como lida"):
+                            if original_index != -1 and st.button("✓", key=f"read_{notif['id']}", type="primary", use_container_width=True, help="Marcar como lida"):
                                 st.session_state.notifications[original_index]['read'] = True
                                 st.rerun()
             
