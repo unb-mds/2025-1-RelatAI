@@ -6,7 +6,7 @@ RelatAI é um sistema que integra **coleta, análise e geração de relatórios 
 
 > 🚀 Transformamos dados públicos do IPEA e BACEN em **relatórios automatizados, acessíveis e compreensíveis para todos**.
 
-[página do projeto](https://unb-mds.github.io/2025-1-RelatAI/) 
+[Página do projeto](https://unb-mds.github.io/2025-1-RelatAI/) 
 
 ---
 
