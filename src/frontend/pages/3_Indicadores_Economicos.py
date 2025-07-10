@@ -6,6 +6,7 @@ import pandas as pd
 import plotly.express as px
 import sys
 import os
+import numpy as np
 
 # Adicionar diretório utils ao path
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
@@ -36,6 +37,75 @@ def fetch_api_data(endpoint: str, params: dict = None):
         return None
     except Exception as e:
         st.error(f"Ocorreu um erro inesperado ao buscar dados de '{endpoint}': {e}")
+        return None
+
+def predict_future_values(historical_data, periods=30, model_type="deepseek", indicator_name=""):
+    """
+    Gera previsões simples baseadas em tendência linear e média móvel
+    """
+    try:
+        # Processar dados históricos
+        df = process_api_data(historical_data)
+        
+        if df is None or len(df) < 10:
+            return None
+        
+        # Ordenar por data
+        df = df.sort_values('data').reset_index(drop=True)
+        
+        # Usar os últimos 30 pontos para calcular a tendência
+        recent_df = df.tail(30)
+        
+        # Calcular tendência linear simples
+        import numpy as np
+        x = np.arange(len(recent_df))
+        y = recent_df['valor'].values
+        
+        # Regressão linear simples
+        if len(x) > 1:
+            slope = np.polyfit(x, y, 1)[0]
+        else:
+            slope = 0
+        
+        # Valor base (último valor)
+        last_value = df['valor'].iloc[-1]
+        last_date = df['data'].iloc[-1]
+        
+        # Gerar previsões
+        forecast_dates = []
+        forecast_values = []
+        forecast_confidence = []
+        
+        for i in range(1, periods + 1):
+            # Nova data
+            new_date = last_date + pd.Timedelta(days=i)
+            forecast_dates.append(new_date)
+            
+            # Previsão baseada na tendência + volatilidade reduzida
+            trend_value = last_value + (slope * i)
+            
+            # Adicionar um pouco de variação aleatória controlada
+            volatility = recent_df['valor'].std() * 0.1  # 10% da volatilidade histórica
+            random_factor = np.random.normal(0, volatility)
+            
+            predicted_value = trend_value + random_factor
+            forecast_values.append(predicted_value)
+            
+            # Confiabilidade decresce com o tempo
+            confidence = max(0.3, 0.95 - (i * 0.02))  # Decai 2% por dia
+            forecast_confidence.append(confidence)
+        
+        # Criar DataFrame de previsão
+        forecast_df = pd.DataFrame({
+            'data': forecast_dates,
+            'valor': forecast_values,
+            'confiabilidade': forecast_confidence
+        })
+        
+        return forecast_df
+        
+    except Exception as e:
+        st.error(f"Erro ao gerar previsões: {str(e)}")
         return None
 
 def format_indicator_value(value, indicator_name):
