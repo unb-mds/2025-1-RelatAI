@@ -171,6 +171,13 @@ with col1:
         • Export em PDF/JSON</p>
     </div>
     """, unsafe_allow_html=True)
+    
+    # Espaçamento entre card e botão
+    st.markdown("<div style='margin-top: 15px;'></div>", unsafe_allow_html=True)
+    
+    # Botão para a página de relatórios
+    if st.button("🚀 Acessar Geração de Relatórios", key="btn_relatorios", use_container_width=True, type="primary"):
+        st.switch_page("pages/2_Gerar_Relatórios.py")
 
 with col2:
     st.markdown("""
@@ -183,6 +190,13 @@ with col2:
         • Análises automáticas</p>
     </div>
     """, unsafe_allow_html=True)
+    
+    # Espaçamento entre card e botão
+    st.markdown("<div style='margin-top: 15px;'></div>", unsafe_allow_html=True)
+    
+    # Botão para a página de indicadores
+    if st.button("📈 Acessar Indicadores Econômicos", key="btn_indicadores", use_container_width=True, type="primary"):
+        st.switch_page("pages/3_Indicadores_Economicos.py")
 
 with col3:
     st.markdown("""
@@ -195,6 +209,12 @@ with col3:
         • Notificações em tempo real</p>
     </div>
     """, unsafe_allow_html=True)
+    
+    # Espaçamento entre card e botão
+    st.markdown("<div style='margin-top: 15px;'></div>", unsafe_allow_html=True)
+    
+    # Botão informativo para o sistema de alertas
+    st.info("💡 Use o botão 'Alertas' no canto superior direito para acessar as notificações.")
 
 st.markdown("---")
 
