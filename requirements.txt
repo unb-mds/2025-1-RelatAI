@@ -3,7 +3,7 @@ uvicorn
 pandas
 scikit-learn
 plotly
-streamlit
+streamlit>=1.30
 requests
 numpy
 matplotlib
