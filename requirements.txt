@@ -9,3 +9,4 @@ numpy
 matplotlib
 torch
 fpdf
+altair<5
